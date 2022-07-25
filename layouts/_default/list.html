@@ -1,3 +1,12 @@
+{{ define "meta" }}
+  {{ if eq .Title "Docs" }}
+    <meta http-equiv="refresh" content="0; url=/docs/quickstart" />
+  {{ end }}
+  {{ if eq .Title "Tutorials" }}
+    <meta http-equiv="refresh" content="0; url=/tutorial/fetching" />
+  {{ end }}
+{{ end}}
+
 {{ define "main" }}
   {{ if .Title }}
   <h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tighter break-normal pb-2 mt-2">

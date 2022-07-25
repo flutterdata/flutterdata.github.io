@@ -9,18 +9,12 @@
   <meta name="description" content="{{.Params.description}}" />
   {{ end }}
 
-  <meta name="twitter:card" content="summary_large_image" />
-
   {{ if .Params.description }}
   <meta name="twitter:description" content="{{ .Params.description }}" />
   {{ end }}
 
   {{ if .Title}}
   <meta name="twitter:title" content="{{ .Title }}" />
-  {{ end }}
-
-  {{ if .Params.featuredImage }}
-  <meta name="twitter:image" content="{{.Permalink}}featured.jpg" />
   {{ end }}
 
   <title>{{ if .Title }}{{ if eq .Section "tutorial"}}Tutorial:{{ end }} {{ .Title }} - {{ end }}{{ .Site.Title }}
