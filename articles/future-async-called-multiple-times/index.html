@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="bg-white antialiased" lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+
+  <meta name="twitter:card" content="summary_large_image" />
+
+  
+
+  
+  <meta name="twitter:title" content="Why Is My Future/Async Called Multiple Times?" />
+  
+
+  
+
+  <title> Why Is My Future/Async Called Multiple Times? - Flutter Data
+  </title>
+
+  <link rel="stylesheet" href="/main.css" />
+  <link rel="stylesheet" href="/css/fonts.css" data>
+
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+</head>
+
+<body>
+  <div class="flex bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-50 h-16 items-center">
+    <div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6">
+      <div class="flex items-center -mx-6">
+        <div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8">
+          <div class="flex items-center">
+            <h1 class="mt-2 whitespace-no-wrap">
+              <a class="no-underline text-gray-800" href="/">
+                <img class="inline-block" style="object-fit: cover; width: 36px; height: 36px;" src="/images/fd.png">
+                <span class="hidden sm:inline align-middle text-2xl mb-4 font-bold tracking-tighter">Flutter
+                  Data</span></a>
+            </h1>
+          </div>
+        </div>
+        <div class="flex flex-grow min-w-0 lg:w-3/4">
+          <div class="w-full lg:px-2">
+            <ul class="flex flex-row">
+              <li class="inline-block">
+                <a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900
+                  " href="/docs/">Docs</a>
+              </li>
+              <li class="inline-block">
+                
+              </li>
+              <li class="inline-block">
+                <a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900
+                  active 
+                  " href="/articles/">Articles</a>
+              </li>
+            </ul>
+          </div>
+
+          <button type="button" id="sidebar-open"
+            class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700"><svg
+              class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
+            </svg>
+          </button>
+          <button type="button" id="sidebar-close"
+            class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700 hidden"><svg
+              class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path
+                d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z">
+              </path>
+            </svg>
+          </button>
+
+          <div class="hidden lg:flex lg:items-center lg:justify-between px-6">
+            <div class="flex justify-start items-center text-gray-500">
+              <a class="no-underline focus:outline-none focus-visible:shadow-outline w-24 mr-5 lg:mr-7 px-1 font-medium text-gray-600 hover:text-gray-900"
+                href="https://pub.dev/packages/flutter_data/"><strong>v1.0.0</strong></a>
+              <a href="https://twitter.com/flutterdata"
+                class="focus:outline-none focus-visible:shadow-outline px-1 mr-5 text-gray-600 hover:text-gray-900"><svg
+                  class="h-5 fill-current" viewBox="0 0 20 20">
+                  <title>Twitter</title>
+                  <path
+                    d="M6.29 18.25c7.55 0 11.67-6.25 11.67-11.67v-.53c.8-.59 1.49-1.3 2.04-2.13-.75.33-1.54.55-2.36.65a4.12 4.12 0 0 0 1.8-2.27c-.8.48-1.68.81-2.6 1a4.1 4.1 0 0 0-7 3.74 11.65 11.65 0 0 1-8.45-4.3 4.1 4.1 0 0 0 1.27 5.49C2.01 8.2 1.37 8.03.8 7.7v.05a4.1 4.1 0 0 0 3.3 4.03 4.1 4.1 0 0 1-1.86.07 4.1 4.1 0 0 0 3.83 2.85A8.23 8.23 0 0 1 0 16.4a11.62 11.62 0 0 0 6.29 1.84">
+                  </path>
+                </svg>
+              </a>
+              <a href="https://github.com/flutterdata/flutter_data"
+                class="focus:outline-none focus-visible:shadow-outline px-1 text-gray-600 hover:text-gray-900"><svg
+                  viewBox="0 0 20 20" class="h-5 fill-current">
+                  <title>GitHub</title>
+                  <path
+                    d="M10 0a10 10 0 0 0-3.16 19.49c.5.1.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69a3.6 3.6 0 0 1 .1-2.64s.84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.4.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0 0 10 0">
+                  </path>
+                </svg></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="w-full max-w-6xl mx-auto px-3 lg:flex">
+    
+    <div id="wrapper" class="min-h-screen w-full lg:static lg:max-h-full lg:overflow-visible lg:pr-6 pt-20 lg:w-3/4">
+      <div class="w-full">
+        
+
+<h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tighter break-normal pb-2 mt-0">
+  Why Is My Future/Async Called Multiple Times?
+</h1>
+
+
+
+<div class="text-lg text-gray-800">
+  <p>Why is <code>FutureBuilder</code> firing <strong>multiple</strong> times? My future should be called just once!</p>
+<p>It appears that this <code>build</code> method is rebuilding unnecessarily:</p>
+<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="err">@</span><span class="n">override</span>
+<span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">FutureBuilder</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="nl">future:</span> <span class="n">callAsyncFetch</span><span class="p">(),</span> <span class="c1">// called all the time!!! 😡
+</span><span class="c1"></span>    <span class="nl">builder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// rebuilding all the time!!! 😡
+</span><span class="c1"></span>    <span class="p">}</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>This causes unintentional network refetches, recomputes and rebuilds – which can also be an expensive problem if using Firebase, for example.</p>
+<p>Well, let me tell you something&hellip;</p>
+<p><strong>This is not a bug 🐞, it&rsquo;s a feature ✅!</strong></p>
+<p>Let&rsquo;s quickly see why&hellip; and how to fix it!</p>
+<h2 id="understanding-the-problem">Understanding the problem</h2>
+<p>Imagine the <code>FutureBuilder</code>&rsquo;s parent is a <code>ListView</code>. This is what happens:</p>
+<ul>
+<li>🧻 User scrolls list</li>
+<li>🔥 <code>build</code> fires many times per second to update the screen</li>
+<li>⁑ <code>callAsyncFetch()</code> gets invoked once per <code>build</code> returning new <code>Future</code>s every time</li>
+<li>= <code>didUpdateWidget</code> in the <code>FutureBuilder</code> compares old and new <code>Future</code>s; if different it calls the <code>builder</code> again</li>
+<li>😩 Since instances are always new (always different to the old one) the <code>builder</code> refires once for every call to the parent&rsquo;s <code>build</code>&hellip; that is, A LOT</li>
+</ul>
+<p><em>(Remember: Flutter is a <em>declarative</em> framework. This means it will paint the screen as many times as needed to reflect the UI you declared, based on the latest state)</em></p>
+<h2 id="a-quick-fix-">A quick fix 🔧</h2>
+<p>We clearly must take the <code>Future</code> out of this <code>build</code> method!</p>
+<p>A simple approach is by introducing a <code>StatefulWidget</code> where we stash our <code>Future</code> in a variable. Now every rebuild will make reference to the same <code>Future</code> instance:</p>
+<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">MyWidget</span> <span class="kd">extends</span> <span class="n">StatefulWidget</span> <span class="p">{</span>
+  <span class="err">@</span><span class="n">override</span>
+  <span class="n">_MyWidgetState</span> <span class="n">createState</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">_MyWidgetState</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">_MyWidgetState</span> <span class="kd">extends</span> <span class="n">State</span><span class="o">&lt;</span><span class="n">MyWidget</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">Future</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">_future</span><span class="p">;</span>
+
+  <span class="err">@</span><span class="n">override</span>
+  <span class="kt">void</span> <span class="n">initState</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">_future</span> <span class="o">=</span> <span class="n">callAsyncFetch</span><span class="p">();</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">initState</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="err">@</span><span class="n">override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">FutureBuilder</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="nl">future:</span> <span class="n">_future</span><span class="p">,</span>
+      <span class="nl">builder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ...
+</span><span class="c1"></span>      <span class="p">}</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>We&rsquo;re caching a value (in other words, <a href="https://en.wikipedia.org/wiki/Memoization">memoizing</a>) such that the <code>build</code> method can now call our code a million times without problems.</p>
+<h2 id="live-example">Live example</h2>
+<p>Here we have a sample parent widget that rebuilds every 3 seconds. It&rsquo;s meant to represent <em>any widget</em> that triggers rebuilds like, for example, a user scrolling a <code>ListView</code>.</p>
+<p>The screen is split in two:</p>
+<ul>
+<li><strong>Top</strong>: a <code>StatelessWidget</code> containing a <code>FutureBuilder</code>. It&rsquo;s fed a new <code>Future</code> that resolves to the current date in seconds</li>
+<li><strong>Bottom</strong>: a <code>StatefulWidget</code> containing a <code>FutureBuilder</code>. A new <code>Future</code> (that also resolves to the current date in seconds) is cached in the <code>State</code> object. This <em>cached</em> <code>Future</code> is passed into the <code>FutureBuilder</code></li>
+</ul>
+<p>Hit <em>Run</em> and see the difference (wait at least 3 seconds). Rebuilds are also logged to the console.</p>
+
+<br>
+<iframe class="w-full text-xl" style="height: 500px"
+  src="https://dartpad.dev/embed-flutter.html?id=8fff93d3dafe16a98ce203e3e3a8295d&split=65&theme=dark">
+</iframe>
+<br>
+
+<p>The top future (stateless) gets called and triggered all the time (every 3 seconds in this example).</p>
+<p>The bottom (stateful) can be called any amount of times without changing.</p>
+<h2 id="cleaner-ways-">Cleaner ways 🛀</h2>
+<p>Are you using <a href="https://pub.dev/packages/provider">Provider</a> by any chance? You can simply use a <code>FutureProvider</code> instead of the <code>StatefulWidget</code> above:</p>
+<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">MyWidget</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="c1">// Future&lt;String&gt; callAsyncFetch() =&gt; Future.delayed(Duration(seconds: 2), () =&gt; &#34;hi&#34;);
+</span><span class="c1"></span>  <span class="err">@</span><span class="n">override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// print(&#39;building widget&#39;);
+</span><span class="c1"></span>    <span class="k">return</span> <span class="n">FutureProvider</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="nl">create:</span> <span class="p">(</span><span class="n">_</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// print(&#39;calling future&#39;);
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">callAsyncFetch</span><span class="p">();</span>
+      <span class="p">},</span>
+      <span class="nl">child:</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
+        <span class="nl">builder:</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">__</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span> <span class="o">??</span> <span class="s1">&#39;Loading...&#39;</span><span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Much nicer, if you ask me.</p>
+<div class="notice leading-relaxed bg-flutter-yellow py-4 px-6 my-8 rounded-md">
+  <strong>Tip!</strong> It&rsquo;s a fully functional example. Comment out those lines and try it out in your own editor!
+</div>
+<p>Another option is using the fantastic <a href="https://pub.dev/packages/flutter_hooks">Flutter Hooks</a> library with the <code>useMemoized</code> hook for the memoization (caching):</p>
+<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">MyWidget</span> <span class="kd">extends</span> <span class="n">HookWidget</span> <span class="p">{</span>
+  <span class="err">@</span><span class="n">override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">future</span> <span class="o">=</span> <span class="n">useMemoized</span><span class="p">(()</span> <span class="p">{</span>
+      <span class="c1">// Future&lt;String&gt; callAsyncFetch() =&gt; Future.delayed(Duration(seconds: 2), () =&gt; &#34;hi&#34;);
+</span><span class="c1"></span>      <span class="n">callAsyncFetch</span><span class="p">();</span> <span class="c1">// or your own async function
+</span><span class="c1"></span>    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">FutureBuilder</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="nl">future:</span> <span class="n">future</span><span class="p">,</span>
+      <span class="nl">builder:</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">hasData</span> <span class="o">?</span> <span class="n">snapshot</span><span class="p">.</span><span class="n">data</span> <span class="o">:</span> <span class="s1">&#39;Loading...&#39;</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="takeaway">Takeaway</h2>
+<p>Your <code>build</code> methods should always be <em>pure</em>, that is, <strong>never</strong> have side-effects (like updating state, calling async functions).</p>
+<p>Remember that <code>builder</code>s are ultimately called by <code>build</code>!</p>
+
+</div>
+
+      </div>
+    </div>
+    
+    <div id="sidebar"
+      class="fixed inset-0 h-full bg-white z-40 w-full border-b -mb-16 lg:-mb-0 lg:static lg:h-auto lg:overflow-y-visible lg:border-b-0 lg:pt-0 lg:w-1/4 lg:block lg:border-0 pt-16 hidden">
+      <div
+        class="h-full overflow-y-auto scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent overflow-hidden lg:top-0 bg-white">
+        <nav class="sticky inset-0 h-screen lg:pt-16 px-6 overflow-y-scroll leading-snug top-16">
+          
+<h3 class="text-sm uppercase tracking-wide text-gray-700">
+  On this page
+</h3>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#understanding-the-problem">Understanding the problem</a></li>
+    <li><a href="#a-quick-fix-">A quick fix 🔧</a></li>
+    <li><a href="#live-example">Live example</a></li>
+    <li><a href="#cleaner-ways-">Cleaner ways 🛀</a></li>
+    <li><a href="#takeaway">Takeaway</a></li>
+  </ul>
+</nav>
+
+        </nav>
+      </div>
+    </div>
+    
+  </div>
+
+  <footer class="py-12 mt-20 text-white bg-gray-900 pattern">
+    <div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6">
+      <div class="flex items-center">
+        <div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8">
+        </div>
+        <div class="flex flex-grow min-w-0 lg:w-3/4">
+          <div class="w-full lg:px-2">
+            <p>
+              Flutter Data is <a href="https://github.com/flutterdata/flutter_data/blob/master/LICENSE">licensed under
+                the MIT license</a>.
+            </p>
+            <p class="text-sm">
+              Created and maintained by <a href="https://github.com/frank06/">Frank Treacy</a>.
+            </p>
+          </div>
+          <div class="hidden lg:flex lg:items-center lg:justify-between px-6">
+            <h1 class="mt-2 whitespace-no-wrap">
+              <img class="inline" style="object-fit: cover; width: 100%;" src="/images/fd.png">
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const _open = function () {
+      document.getElementById('sidebar').classList.remove('hidden');
+      document.getElementById('wrapper').classList.add('overflow-hidden', 'max-h-screen', 'fixed');
+
+      document.getElementById('sidebar-open').classList.toggle('hidden');
+      document.getElementById('sidebar-close').classList.toggle('hidden');
+    };
+
+    const _close = function () {
+      document.getElementById('sidebar').classList.add('hidden');
+      document.getElementById('wrapper').classList.remove('overflow-hidden', 'max-h-screen', 'fixed');
+
+      document.getElementById('sidebar-open').classList.toggle('hidden');
+      document.getElementById('sidebar-close').classList.toggle('hidden');
+    };
+
+    document.getElementById('sidebar-open').onclick = _open;
+    document.getElementById('sidebar-close').onclick = _close;
+
+    [].forEach.call(document.querySelectorAll('a[href^="#"]'), element => {
+      element.onclick = _close;
+    });
+  </script>
+</body>
+
+</html>

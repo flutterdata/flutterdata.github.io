@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>es6 on Flutter Data</title>
+    <link>/tags/es6/</link>
+    <description>Recent content in es6 on Flutter Data</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 15 Oct 2019 13:43:48 -0500</lastBuildDate><atom:link href="/tags/es6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Ultimate Javascript vs Dart Syntax Guide</title>
+      <link>/articles/ultimate-javascript-dart-syntax-guide/</link>
+      <pubDate>Tue, 15 Oct 2019 13:43:48 -0500</pubDate>
+      
+      <guid>/articles/ultimate-javascript-dart-syntax-guide/</guid>
+      <description>Nowadays, Dart is almost only used in the context of Flutter. This guide is exclusively focused in comparing Javascript and Dart&amp;rsquo;s syntax.
+(Pros and cons of choosing Flutter/Dart is outside the scope of this article.)
+So if you have a JS background and want to build apps with this awesome framework, read on. Let’s see how these two puppies fair against each other!
+Variables and constants // js  var dog1 = &amp;#34;Lucy&amp;#34;; // variable let dog2 = &amp;#34;Milo&amp;#34;; // block scoped variable  const maleDogs = [&amp;#34;Max&amp;#34;, &amp;#34;Bella&amp;#34;]; // mutable single-assignment variable maleDogs.</description>
+    </item>
+    
+  </channel>
+</rss>
