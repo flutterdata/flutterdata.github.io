@@ -1,0 +1,1 @@
+{{ with getJSON "https://api.github.com/repos/flutterdata/flutter_data/tags" }}{{ with index . 2 }}{{- .name -}}{{end}}{{ end }}

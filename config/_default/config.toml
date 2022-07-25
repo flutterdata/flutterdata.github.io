@@ -1,0 +1,20 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "Flutter Data"
+
+pygmentsUseClassic = false
+pygmentsUseClasses = true
+pygmentsCodeFences = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    endLevel = 2
+    startLevel = 2
+
+[caches]
+[caches.getjson]
+dir = ":cacheDir/:project"
+maxAge = "10s"

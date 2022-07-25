@@ -1,0 +1,15 @@
+<div class="my-8 bg-green-50 border-dashed border-8 border-green-600">
+  <form name="contact" class="mt-6 px-4 pb-6 w-full" method="POST" onsubmit="return window.submitContact(this, false)" netlify>
+    <h3 class="initial my-0">Need professional help with Flutter?</h3>
+    <div class="initial text-sm py-4">Describe your project in detail and include your e-mail and budget.</div>
+    <textarea name="body" class="initial h-32 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 mb-4 text-gray-700 leading-tight focus:outline-none text-sm" id="inline-body"></textarea>
+    <input type="submit" class="initial shadow bg-gray-600 text-sm hover:bg-gray-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" value="Send message">
+  
+    <div class="form-success hidden">
+      <p class="text-left text-gray-800 text-lg font-bold">Message sent.<br><br>Thank you! I will get back to you shortly.</p>
+    </div>
+    <div class="form-error hidden">
+      <p class="text-left text-red-800 text-lg font-bold">An error has occurred. Please e-mail me@frank06.net with your request.</p>
+    </div>
+  </form>
+</div>
