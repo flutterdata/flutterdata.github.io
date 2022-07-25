@@ -1,741 +1,438 @@
-<!DOCTYPE html>
-<html class="bg-white antialiased" lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  
-
-  <meta name="twitter:card" content="summary_large_image" />
-
-  
-
-  
-  <meta name="twitter:title" content="Deconstructing Dart Constructors" />
-  
-
-  
-
-  <title> Deconstructing Dart Constructors - Flutter Data
-  </title>
-
-  <link rel="stylesheet" href="/main.css" />
-  <link rel="stylesheet" href="/css/fonts.css" data>
-
-  <link rel="icon" href="/images/favicon.png" type="image/png">
-</head>
-
-<body>
-  <div class="flex bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-50 h-16 items-center">
-    <div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6">
-      <div class="flex items-center -mx-6">
-        <div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8">
-          <div class="flex items-center">
-            <h1 class="mt-2 whitespace-no-wrap">
-              <a class="no-underline text-gray-800" href="/">
-                <img class="inline-block" style="object-fit: cover; width: 36px; height: 36px;" src="/images/fd.png">
-                <span class="hidden sm:inline align-middle text-2xl mb-4 font-bold tracking-tighter">Flutter
-                  Data</span></a>
-            </h1>
-          </div>
-        </div>
-        <div class="flex flex-grow min-w-0 lg:w-3/4">
-          <div class="w-full lg:px-2">
-            <ul class="flex flex-row">
-              <li class="inline-block">
-                <a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900
-                  " href="/docs/">Docs</a>
-              </li>
-              <li class="inline-block">
-                
-              </li>
-              <li class="inline-block">
-                <a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900
-                  active 
-                  " href="/articles/">Articles</a>
-              </li>
-            </ul>
-          </div>
-
-          <button type="button" id="sidebar-open"
-            class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700"><svg
-              class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
-            </svg>
-          </button>
-          <button type="button" id="sidebar-close"
-            class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700 hidden"><svg
-              class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path
-                d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z">
-              </path>
-            </svg>
-          </button>
-
-          <div class="hidden lg:flex lg:items-center lg:justify-between px-6">
-            <div class="flex justify-start items-center text-gray-500">
-              <a class="no-underline focus:outline-none focus-visible:shadow-outline w-24 mr-5 lg:mr-7 px-1 font-medium text-gray-600 hover:text-gray-900"
-                href="https://pub.dev/packages/flutter_data/"><strong>v1.0.0</strong></a>
-              <a href="https://twitter.com/flutterdata"
-                class="focus:outline-none focus-visible:shadow-outline px-1 mr-5 text-gray-600 hover:text-gray-900"><svg
-                  class="h-5 fill-current" viewBox="0 0 20 20">
-                  <title>Twitter</title>
-                  <path
-                    d="M6.29 18.25c7.55 0 11.67-6.25 11.67-11.67v-.53c.8-.59 1.49-1.3 2.04-2.13-.75.33-1.54.55-2.36.65a4.12 4.12 0 0 0 1.8-2.27c-.8.48-1.68.81-2.6 1a4.1 4.1 0 0 0-7 3.74 11.65 11.65 0 0 1-8.45-4.3 4.1 4.1 0 0 0 1.27 5.49C2.01 8.2 1.37 8.03.8 7.7v.05a4.1 4.1 0 0 0 3.3 4.03 4.1 4.1 0 0 1-1.86.07 4.1 4.1 0 0 0 3.83 2.85A8.23 8.23 0 0 1 0 16.4a11.62 11.62 0 0 0 6.29 1.84">
-                  </path>
-                </svg>
-              </a>
-              <a href="https://github.com/flutterdata/flutter_data"
-                class="focus:outline-none focus-visible:shadow-outline px-1 text-gray-600 hover:text-gray-900"><svg
-                  viewBox="0 0 20 20" class="h-5 fill-current">
-                  <title>GitHub</title>
-                  <path
-                    d="M10 0a10 10 0 0 0-3.16 19.49c.5.1.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69a3.6 3.6 0 0 1 .1-2.64s.84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.4.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0 0 10 0">
-                  </path>
-                </svg></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-  <div class="w-full max-w-6xl mx-auto px-3 lg:flex">
-    
-    <div id="wrapper" class="min-h-screen w-full lg:static lg:max-h-full lg:overflow-visible lg:pr-6 pt-20 lg:w-3/4">
-      <div class="w-full">
-        
-
-<h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tighter break-normal pb-2 mt-0">
-  Deconstructing Dart Constructors
-</h1>
-
-
-
-<div class="text-lg text-gray-800">
-  <p>Ever confused by that mysterious syntax in Dart constructors? Colons, named parameters, asserts, factories&hellip;</p>
-<p>Read this post and you will become an expert!</p>
-<p><img src="featured.jpg" alt="Photo by Arseny Togulev on Unsplash"></p>
-<p>When we want an <strong>instance</strong> of a certain class we call a <strong>constructor</strong>, right?</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">var</span> <span class="n">robot</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Robot</span><span class="p">();</span>
-</code></pre></div><p>In Dart 2 we can leave out the <code>new</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">var</span> <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">();</span>
-</code></pre></div><p>A constructor is used to ensure instances are created in a coherent state. This is the definition in a class:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="n">Robot</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>This constructor has no arguments so we can leave it out and write:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-<span class="p">}</span>
-</code></pre></div><p>The default constructor is implicitly defined.</p>
-<div class="notice leading-relaxed bg-flutter-yellow py-4 px-6 my-8 rounded-md">
-  Did you know you can try out Dart and Flutter code in <a href="https://dartpad.dartlang.org/">DartPad</a>?
-</div>
-<h2 id="initializing">Initializing&hellip;</h2>
-<p>Most times we need to configure our instances. For example, pass in the height of a robot:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
-</code></pre></div><p><code>r</code> is now a 5-feet tall <code>Robot</code>.</p>
-<p>To write that constructor we include the <code>height</code> field after the colon <code>:</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>or even</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">physics</span><span class="p">.</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;heightInFt&#39;</span><span class="p">];</span>
-<span class="p">}</span>
-</code></pre></div><p>This is called an <strong>initializer</strong>. It accepts a comma-separated list of expressions that initialize fields with arguments.</p>
-<p>Fortunately, Dart gives us a shortcut. If the field name and type are the same as the argument in the constructor, we can do:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Imagine that the <code>height</code> field is expressed in feet and we want clients to supply the height in meters. Dart also allows us to initialize fields with computations from static methods (as they don&rsquo;t depend on an <em>instance</em> of the class):</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">static</span> <span class="n">mToFt</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">m</span> <span class="o">*</span> <span class="m">3.281</span><span class="p">;</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span> <span class="c1">// in ft
-</span><span class="c1"></span>  <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">mToFt</span><span class="p">(</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Sometimes we must call <code>super</code> constructors when initializing:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Machine</span> <span class="p">{</span>
-  <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
-  <span class="n">Machine</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">Robot</span> <span class="kd">extends</span> <span class="n">Machine</span> <span class="p">{</span>
-  <span class="kd">static</span> <span class="n">mToFt</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">m</span> <span class="o">*</span> <span class="m">3.281</span><span class="p">;</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">mToFt</span><span class="p">(</span><span class="n">height</span><span class="p">),</span> <span class="k">super</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Notice that <code>super(...)</code> must always be the last call in the initializer.</p>
-<p>And if we needed to add more complex guards (than types) against a malformed robot, we can use <code>assert</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="k">assert</span><span class="p">(</span><span class="n">height</span> <span class="o">&gt;</span> <span class="m">4.2</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="accessors-and-mutators">Accessors and mutators</h2>
-<p>Back to our earlier robot definition:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 5
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Let&rsquo;s make it taller:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
-  <span class="n">r</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="m">6</span><span class="p">;</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 6
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>But robots don&rsquo;t grow, their height is constant! Let&rsquo;s prevent anyone from modifying the height by making the field <strong>private</strong>.</p>
-<p>In Dart, there is no <code>private</code> keyword. Instead, we use a convention: field names starting with <code>_</code> are private (library-private, actually).</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>Great! But now there is no way to access <code>r.height</code>. We can make the <code>height</code> property read-only by adding a <strong>getter</strong>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">);</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Getters are functions that take no arguments and conform to the <a href="https://en.wikipedia.org/wiki/Uniform_access_principle">uniform access principle</a>.</p>
-<p>We can simplify our getter by using two shortcuts: single expression syntax (fat arrow) and implicit <code>this</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">);</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Actually, we can think of public fields as private fields with getters and setters. That is:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>is equivalent to:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">);</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">set</span> <span class="n">height</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_height</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>Keep in mind initializers only assign values to fields and it is therefore not possible to use a setter in an initializer:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// ERROR: &#39;height&#39; isn&#39;t a field in the enclosing class
-</span><span class="c1"></span>
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">set</span> <span class="n">height</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_height</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="constructor-bodies">Constructor bodies</h2>
-<p><img src="https://media.giphy.com/media/iIAYEKtLy0yG7TacbC/giphy.gif" alt=""></p>
-<p>If a setter needs to be called, we&rsquo;ll have to do that in a <strong>constructor body</strong>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">height</span> <span class="o">=</span> <span class="n">h</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">set</span> <span class="n">height</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_height</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><p>We can do all sorts of things in constructor bodies, but we can&rsquo;t return a value!</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// ERROR: Constructors can&#39;t return values
-</span><span class="c1"></span>  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="final-fields">Final fields</h2>
-<p><strong>Final</strong> fields are fields that can only be assigned once.</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">7</span><span class="p">);</span> <span class="cm">/* ERROR */</span>
-</code></pre></div><p>Inside our class, we won&rsquo;t be able to use the setter:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">);</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">set</span> <span class="n">height</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">_height</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span> <span class="c1">// ERROR
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><div class="notice leading-relaxed bg-flutter-yellow py-4 px-6 my-8 rounded-md">
-  <p>Just like with <code>var</code>, we can use <code>final</code> before any type definition:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">var</span> <span class="n">r</span><span class="p">;</span>
-<span class="kd">var</span> <span class="n">Robot</span> <span class="n">r</span><span class="p">;</span>
-
-<span class="kd">final</span> <span class="n">r</span><span class="p">;</span>
-<span class="kd">final</span> <span class="n">Robot</span> <span class="n">r</span><span class="p">;</span>
-</code></pre></div>
-</div>
-<p>The following won&rsquo;t work because <code>height</code>, being <code>final</code>, <strong>must</strong> be initialized. And initialization happens before the constructor body is run:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">(</span><span class="kt">double</span> <span class="n">height</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">;</span> <span class="c1">// ERROR: The final variable &#39;height&#39; must be initialized
-</span><span class="c1"></span>  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>Let&rsquo;s fix it:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="default-values">Default values</h2>
-<p>If <em>most</em> robots are 5-feet tall then we can avoid specifying the height each time. We can make an argument <strong>optional</strong> and provide a <strong>default value</strong>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">([</span><span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="m">5</span><span class="p">]);</span>
-<span class="p">}</span>
-</code></pre></div><p>So we can just call:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">();</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 5
-</span><span class="c1"></span>
-  <span class="kd">var</span> <span class="n">r2d2</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">3.576</span><span class="p">);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r2d2</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 3.576
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p><img src="https://media.giphy.com/media/l1KsGK43cTDF4VAsg/giphy.gif" alt=""></p>
-<h2 id="immutable-robots">Immutable robots</h2>
-<p>Our robots clearly have more attributes than a height. Let&rsquo;s add some more!</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">170</span><span class="p">,</span> <span class="s2">&#34;Walter&#34;</span><span class="p">);</span>
-  <span class="n">r</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&#34;Steve&#34;</span><span class="p">;</span> <span class="c1">// ERROR
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>As all fields are <code>final</code>, our robots are immutable! Once they are initialized, their attributes can&rsquo;t be changed.</p>
-<p>Now let&rsquo;s imagine that robots respond to many different names:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">170</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">]);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">names</span><span class="p">..</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;Steve&#34;</span><span class="p">));</span> <span class="c1">// [Walter, Steve]
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Dang, using a <code>List</code> made our robot mutable again!</p>
-<p>We can solve this with a <strong><code>const</code> constructor</strong>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="kd">const</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">170</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">]);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">names</span><span class="p">..</span><span class="n">add</span><span class="p">(</span><span class="s2">&#34;Steve&#34;</span><span class="p">));</span> <span class="c1">// ERROR: Unsupported operation: add
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p><code>const</code> can only be used with expressions that can be computed at compile time. Take the following example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="k">import</span> <span class="s1">&#39;dart:math&#39;</span><span class="p">;</span>
-
-<span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="kd">const</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">170</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">,</span> <span class="n">Random</span><span class="p">().</span><span class="n">nextDouble</span><span class="p">().</span><span class="n">toString</span><span class="p">()]);</span> <span class="c1">// ERROR: Invalid constant value
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p><code>const</code> instances are canonicalized which means that equal instances point to the same object in memory space when running.</p>
-<p>For example this is a &ldquo;cheap&rdquo; operation:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="p">[</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="n">i</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">20000</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="m">1</span><span class="p">)</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">170</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">])];</span>
-<span class="p">}</span>
-</code></pre></div><p>And yes, using <code>const</code> constructors can improve performance in Flutter applications.</p>
-
-<h2 id="optional-arguments-always-last">Optional arguments always last!</h2>
-<p>If we wanted the <code>weight</code> argument to be <strong>optional</strong> we&rsquo;d have to declare it at the end:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="kd">const</span> <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="n">weight</span> <span class="o">=</span> <span class="m">170</span><span class="p">]);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">]);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">weight</span><span class="p">);</span> <span class="c1">// 170
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><h2 id="naming-things">Naming things</h2>
-<p>Having to construct a robot like <code>Robot(5, [&quot;Walter&quot;])</code> is not very explicit.</p>
-<p>Dart has named arguments! Naturally, they can be provided in any order and are all optional by default:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span> <span class="p">});</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="nl">height:</span> <span class="m">5</span><span class="p">,</span> <span class="nl">names:</span> <span class="p">[</span><span class="s2">&#34;Walter&#34;</span><span class="p">]);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 5
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>But we can annotate a field with <code>@required</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span> <span class="p">});</span>
-<span class="p">}</span>
-</code></pre></div><p>(or use <code>assert(weight != null)</code> in the initializer for a runtime check!)</p>
-<h2 id="naming-things-with-defaults">Naming things with defaults</h2>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="m">7</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">weight</span> <span class="o">=</span> <span class="m">100</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span> <span class="o">=</span> <span class="kd">const</span> <span class="p">[]</span> <span class="p">});</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">weight</span><span class="p">);</span> <span class="c1">// 100
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">names</span><span class="p">);</span> <span class="c1">// []
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>It&rsquo;s important to note that these default values <strong>must be constant</strong>!</p>
-<p>Alternatively, we can use the <a href="/articles/checking-null-aware-operators-dart">?? (&ldquo;if-null&rdquo;) operator</a> in the assignment to provide any constant or static computation:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="n">height</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">names</span> <span class="o">=</span> <span class="kd">const</span> <span class="p">[]</span> <span class="p">})</span> <span class="o">:</span> <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">??</span> <span class="m">7</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">??</span> <span class="kt">int</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&#34;100&#34;</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">weight</span><span class="p">);</span> <span class="c1">// 100
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>How about making the attributes private?</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">_names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="k">this</span><span class="p">.</span><span class="n">_height</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">_weight</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="n">_names</span> <span class="p">});</span> <span class="c1">// ERROR: Named optional parameters can&#39;t start with an underscore
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>It fails! Unlike with positional arguments, we need to specify the mappings in the initializer:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">_names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">({</span> <span class="n">height</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">names</span> <span class="p">})</span> <span class="o">:</span> <span class="n">_height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="n">_weight</span> <span class="o">=</span> <span class="n">weight</span><span class="p">,</span> <span class="n">_names</span> <span class="o">=</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">get</span> <span class="n">weight</span> <span class="o">=&gt;</span> <span class="n">_weight</span><span class="p">;</span>
-  <span class="kd">get</span> <span class="n">names</span> <span class="o">=&gt;</span> <span class="n">_names</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">(</span><span class="nl">height:</span> <span class="m">5</span><span class="p">).</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 5
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><h2 id="mixing-it-up">Mixing it up</h2>
-<p>Both positional and named argument styles can be used together:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">_weight</span><span class="p">;</span>
-  <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">_names</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="p">{</span> <span class="n">weight</span><span class="p">,</span> <span class="n">names</span> <span class="p">})</span> <span class="o">:</span>
-    <span class="n">_height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span>
-    <span class="n">_weight</span> <span class="o">=</span> <span class="n">weight</span><span class="p">,</span>
-    <span class="n">_names</span> <span class="o">=</span> <span class="n">names</span><span class="p">;</span>
-
-  <span class="kd">get</span> <span class="n">height</span> <span class="o">=&gt;</span> <span class="n">_height</span><span class="p">;</span>
-  <span class="kd">get</span> <span class="n">weight</span> <span class="o">=&gt;</span> <span class="n">_weight</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">7</span><span class="p">,</span> <span class="nl">weight:</span> <span class="m">120</span><span class="p">);</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="n">weight</span><span class="p">);</span> <span class="c1">// 120
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><h2 id="named-constructors">Named constructors</h2>
-<p>Not only can arguments be named. We can give names to any number of constructors:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">fromPlanet</span><span class="p">(</span><span class="kt">String</span> <span class="n">planet</span><span class="p">)</span> <span class="o">:</span> <span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="n">planet</span> <span class="o">==</span> <span class="s1">&#39;geonosis&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="m">2</span> <span class="o">:</span> <span class="m">7</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">Robot</span> <span class="n">other</span><span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">Robot</span><span class="p">(</span><span class="m">7</span><span class="p">)).</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="k">new</span> <span class="n">Robot</span><span class="p">.</span><span class="n">fromPlanet</span><span class="p">(</span><span class="s1">&#39;geonosis&#39;</span><span class="p">).</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 2
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="k">new</span> <span class="n">Robot</span><span class="p">.</span><span class="n">fromPlanet</span><span class="p">(</span><span class="s1">&#39;earth&#39;</span><span class="p">).</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>What happened in <code>copy</code>? We used <code>this</code> to call the default constructor, effectively &ldquo;redirecting&rdquo; the instantiation.</p>
-<p>(<code>new</code> is optional but I sometimes like to use it, since it clearly states the intent.)</p>
-<p>Invoking named <code>super</code> constructors works as expected:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Machine</span> <span class="p">{</span>
-  <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
-  <span class="n">Machine</span><span class="p">();</span>
-  <span class="n">Machine</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">Robot</span> <span class="kd">extends</span> <span class="n">Machine</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">named</span><span class="p">({</span> <span class="n">height</span><span class="p">,</span> <span class="n">name</span> <span class="p">})</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span><span class="p">,</span> <span class="k">super</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="nl">height:</span> <span class="m">7</span><span class="p">,</span> <span class="nl">name:</span> <span class="s2">&#34;Walter&#34;</span><span class="p">).</span><span class="n">name</span><span class="p">);</span> <span class="c1">// Walter
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Note that named constructors require an unnamed constructor to be defined!</p>
-<h2 id="keeping-it-private">Keeping it private</h2>
-<p>But what if we didn&rsquo;t want to expose a public constructor? Only <code>named</code>?</p>
-<p>We can make a constructor private by prefixing it with an underscore:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>Applying this knowledge to our previous example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Machine</span> <span class="p">{</span>
-  <span class="kt">String</span> <span class="n">name</span><span class="p">;</span>
-  <span class="n">Machine</span><span class="p">.</span><span class="n">_</span><span class="p">();</span>
-  <span class="n">Machine</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">Robot</span> <span class="kd">extends</span> <span class="n">Machine</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="o">:</span> <span class="k">super</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">named</span><span class="p">({</span> <span class="n">height</span><span class="p">,</span> <span class="n">name</span> <span class="p">})</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">.</span><span class="n">named</span><span class="p">(</span><span class="nl">height:</span> <span class="m">7</span><span class="p">,</span> <span class="nl">name:</span> <span class="s2">&#34;Walter&#34;</span><span class="p">).</span><span class="n">name</span><span class="p">);</span> <span class="c1">// Walter
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>The named constructor is &ldquo;redirecting&rdquo; to the private default constructor (which in turn delegates part of the creation to its <code>Machine</code> ancestor).</p>
-<p>Consumers of this API only see <code>Robot.named()</code> as a way to get robot instances.</p>
-<h2 id="a-robot-factory">A robot factory</h2>
-<p><img src="https://media.giphy.com/media/12qq4Em3MVuwJW/giphy.gif" alt=""></p>
-<p>We said constructors were not allowed to return. Guess what?</p>
-<p><strong>Factory constructors</strong> can!</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-
-  <span class="kd">factory</span> <span class="n">Robot</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">().</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Factory constructors are syntactic sugar for the &ldquo;factory pattern&rdquo;, usually implemented with <code>static</code> functions.</p>
-<p>They appear like a constructor from the outside (useful for example to avoid breaking API contracts), but internally they can delegate instance creation invoking a &ldquo;normal&rdquo; constructor. This explains why factory constructors <strong>do not</strong> have initializers.</p>
-<p>Since factory constructors can return other instances (so long as they satisfy the interface of the current class), we can do very useful things like:</p>
-<ul>
-<li>caching: conditionally returning existing objects (they might be expensive to create)</li>
-<li>subclasses: returning other instances such as subclasses</li>
-</ul>
-<p>They work with both normal and named constructors!</p>
-<p>Here&rsquo;s our robot warehouse, that only supplies one robot per height:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-
-  <span class="kd">static</span> <span class="kd">final</span> <span class="n">_cache</span> <span class="o">=</span> <span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="n">Robot</span><span class="o">&gt;</span><span class="p">{};</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-
-  <span class="kd">factory</span> <span class="n">Robot</span><span class="p">(</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">_cache</span><span class="p">[</span><span class="n">height</span><span class="p">]</span> <span class="o">??=</span> <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="n">height</span><span class="p">);</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
-  <span class="kd">final</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
-  <span class="kd">final</span> <span class="n">r3</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="m">9</span><span class="p">);</span>
-
-  <span class="n">print</span><span class="p">(</span><span class="n">r1</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">r2</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 7
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">identical</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">));</span> <span class="c1">// true
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">r3</span><span class="p">.</span><span class="n">height</span><span class="p">);</span> <span class="c1">// 9
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">identical</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="n">r3</span><span class="p">));</span> <span class="c1">// false
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>Finally, to demonstrate how a factory would instantiate subclasses, let&rsquo;s create different robot brands that calculate prices as a function of height:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">factory</span> <span class="n">Robot</span><span class="p">(</span><span class="kt">String</span> <span class="n">brand</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">brand</span> <span class="o">==</span> <span class="s1">&#39;fanuc&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="n">Fanuc</span><span class="p">(</span><span class="m">2</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">brand</span> <span class="o">==</span> <span class="s1">&#39;yaskawa&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="n">Yaskawa</span><span class="p">(</span><span class="m">9</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">brand</span> <span class="o">==</span> <span class="s1">&#39;abb&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="n">ABB</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
-    <span class="k">throw</span> <span class="s2">&#34;no brand found&#34;</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="kt">double</span> <span class="kd">get</span> <span class="n">price</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">Fanuc</span> <span class="kd">implements</span> <span class="n">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Fanuc</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-  <span class="kt">double</span> <span class="kd">get</span> <span class="n">price</span> <span class="o">=&gt;</span> <span class="n">height</span> <span class="o">*</span> <span class="m">2922.21</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">Yaskawa</span> <span class="kd">implements</span> <span class="n">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">Yaskawa</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-  <span class="kt">double</span> <span class="kd">get</span> <span class="n">price</span> <span class="o">=&gt;</span> <span class="n">height</span> <span class="o">*</span> <span class="m">1315</span> <span class="o">+</span> <span class="m">8992</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">class</span> <span class="nc">ABB</span> <span class="kd">implements</span> <span class="n">Robot</span> <span class="p">{</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-  <span class="n">ABB</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-  <span class="kt">double</span> <span class="kd">get</span> <span class="n">price</span> <span class="o">=&gt;</span> <span class="n">height</span> <span class="o">*</span> <span class="m">2900</span> <span class="o">-</span> <span class="m">7000</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">try</span> <span class="p">{</span>
-    <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">(</span><span class="s1">&#39;fanuc&#39;</span><span class="p">).</span><span class="n">price</span><span class="p">);</span> <span class="c1">// 5844.42
-</span><span class="c1"></span>    <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">(</span><span class="s1">&#39;abb&#39;</span><span class="p">).</span><span class="n">price</span><span class="p">);</span> <span class="c1">// 13300
-</span><span class="c1"></span>    <span class="n">print</span><span class="p">(</span><span class="n">Robot</span><span class="p">(</span><span class="s1">&#39;flutter&#39;</span><span class="p">).</span><span class="n">price</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">print</span><span class="p">(</span><span class="n">err</span><span class="p">);</span> <span class="c1">// no brand found
-</span><span class="c1"></span>  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="singletons">Singletons</h2>
-<p>Singletons are classes that only ever create one instance. We think of this as a specific case of caching!</p>
-<p>Let&rsquo;s implement the singleton pattern in Dart:</p>
-<div class="highlight"><pre class="chroma"><code class="language-dart" data-lang="dart"><span class="kd">class</span> <span class="nc">Robot</span> <span class="p">{</span>
-  <span class="kd">static</span> <span class="kd">final</span> <span class="n">Robot</span> <span class="n">_instance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="m">7</span><span class="p">);</span>
-  <span class="kd">final</span> <span class="kt">double</span> <span class="n">height</span><span class="p">;</span>
-
-  <span class="kd">factory</span> <span class="n">Robot</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">_instance</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">Robot</span><span class="p">.</span><span class="n">_</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">height</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">();</span>
-  <span class="kd">var</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">();</span>
-  <span class="n">print</span><span class="p">(</span><span class="n">identical</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">));</span> <span class="c1">// true
-</span><span class="c1"></span>  <span class="n">print</span><span class="p">(</span><span class="n">r1</span> <span class="o">==</span> <span class="n">r2</span><span class="p">);</span> <span class="c1">// true
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></div><p>The factory constructor <code>Robot(height)</code> simply always returns the one and only instance that was created when loading the <code>Robot</code> class. (So in this case, I prefer not to use <code>new</code> before <code>Robot</code>.)</p>
-
-</div>
-
-      </div>
-    </div>
-    
-    <div id="sidebar"
-      class="fixed inset-0 h-full bg-white z-40 w-full border-b -mb-16 lg:-mb-0 lg:static lg:h-auto lg:overflow-y-visible lg:border-b-0 lg:pt-0 lg:w-1/4 lg:block lg:border-0 pt-16 hidden">
-      <div
-        class="h-full overflow-y-auto scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent overflow-hidden lg:top-0 bg-white">
-        <nav class="sticky inset-0 h-screen lg:pt-16 px-6 overflow-y-scroll leading-snug top-16">
-          
-<h3 class="text-sm uppercase tracking-wide text-gray-700">
-  On this page
-</h3>
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#initializing">Initializing&hellip;</a></li>
-    <li><a href="#accessors-and-mutators">Accessors and mutators</a></li>
-    <li><a href="#constructor-bodies">Constructor bodies</a></li>
-    <li><a href="#final-fields">Final fields</a></li>
-    <li><a href="#default-values">Default values</a></li>
-    <li><a href="#immutable-robots">Immutable robots</a></li>
-    <li><a href="#optional-arguments-always-last">Optional arguments always last!</a></li>
-    <li><a href="#naming-things">Naming things</a></li>
-    <li><a href="#naming-things-with-defaults">Naming things with defaults</a></li>
-    <li><a href="#mixing-it-up">Mixing it up</a></li>
-    <li><a href="#named-constructors">Named constructors</a></li>
-    <li><a href="#keeping-it-private">Keeping it private</a></li>
-    <li><a href="#a-robot-factory">A robot factory</a></li>
-    <li><a href="#singletons">Singletons</a></li>
-  </ul>
-</nav>
-
-        </nav>
-      </div>
-    </div>
-    
-  </div>
-
-  <footer class="py-12 mt-20 text-white bg-gray-900 pattern">
-    <div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6">
-      <div class="flex items-center">
-        <div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8">
-        </div>
-        <div class="flex flex-grow min-w-0 lg:w-3/4">
-          <div class="w-full lg:px-2">
-            <p>
-              Flutter Data is <a href="https://github.com/flutterdata/flutter_data/blob/master/LICENSE">licensed under
-                the MIT license</a>.
-            </p>
-            <p class="text-sm">
-              Created and maintained by <a href="https://github.com/frank06/">Frank Treacy</a>.
-            </p>
-          </div>
-          <div class="hidden lg:flex lg:items-center lg:justify-between px-6">
-            <h1 class="mt-2 whitespace-no-wrap">
-              <img class="inline" style="object-fit: cover; width: 100%;" src="/images/fd.png">
-            </h1>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    const _open = function () {
-      document.getElementById('sidebar').classList.remove('hidden');
-      document.getElementById('wrapper').classList.add('overflow-hidden', 'max-h-screen', 'fixed');
-
-      document.getElementById('sidebar-open').classList.toggle('hidden');
-      document.getElementById('sidebar-close').classList.toggle('hidden');
-    };
-
-    const _close = function () {
-      document.getElementById('sidebar').classList.add('hidden');
-      document.getElementById('wrapper').classList.remove('overflow-hidden', 'max-h-screen', 'fixed');
-
-      document.getElementById('sidebar-open').classList.toggle('hidden');
-      document.getElementById('sidebar-close').classList.toggle('hidden');
-    };
-
-    document.getElementById('sidebar-open').onclick = _open;
-    document.getElementById('sidebar-close').onclick = _close;
-
-    [].forEach.call(document.querySelectorAll('a[href^="#"]'), element => {
-      element.onclick = _close;
-    });
-  </script>
-</body>
-
-</html>
+<!doctype html><html class="bg-white antialiased" lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="Deconstructing Dart Constructors"><title>Deconstructing Dart Constructors - Flutter Data</title><link rel=stylesheet href=/main.css><link rel=stylesheet href=/css/fonts.css data><link rel=icon href=/images/favicon.png type=image/png></head><body><div class="flex bg-white border-b border-gray-200 fixed top-0 inset-x-0 z-50 h-16 items-center"><div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6"><div class="flex items-center -mx-6"><div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8"><div class="flex items-center"><h1 class="mt-2 whitespace-no-wrap"><a class="no-underline text-gray-800" href=/><img class=inline-block style=object-fit:cover;width:36px;height:36px src=/images/fd.png>
+<span class="hidden sm:inline align-middle text-2xl mb-4 font-bold tracking-tighter">Flutter
+Data</span></a></h1></div></div><div class="flex flex-grow min-w-0 lg:w-3/4"><div class="w-full lg:px-2"><ul class="flex flex-row"><li class=inline-block><a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900" href=/docs/>Docs</a></li><li class=inline-block><a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900" href=/tutorial/>Tutorial</a></li><li class=inline-block><a class="no-underline focus:outline-none focus-visible:shadow-outline mr-5 lg:mr-7 px-1 text-gray-700 hover:text-gray-900
+active" href=/articles/>Articles</a></li></ul></div><button type=button id=sidebar-open class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700"><svg class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg></button>
+<button type=button id=sidebar-close class="flex px-6 items-center lg:hidden bg-white text-gray-500 focus:outline-none focus:text-gray-700 hidden"><svg class="fill-current w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 8.586 2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/></svg></button><div class="hidden lg:flex lg:items-center lg:justify-between px-6"><div class="flex justify-start items-center text-gray-500"><a class="no-underline focus:outline-none focus-visible:shadow-outline w-24 mr-5 lg:mr-7 px-1 font-medium text-gray-600 hover:text-gray-900" href=https://pub.dev/packages/flutter_data/><strong>v1.4.4</strong></a>
+<a href=https://twitter.com/flutterdata class="focus:outline-none focus-visible:shadow-outline px-1 mr-5 text-gray-600 hover:text-gray-900"><svg class="h-5 fill-current" viewBox="0 0 20 20"><title>Twitter</title><path d="M6.29 18.25c7.55.0 11.67-6.25 11.67-11.67v-.53c.8-.59 1.49-1.3 2.04-2.13-.75.33-1.54.55-2.36.65a4.12 4.12.0 001.8-2.27c-.8.48-1.68.81-2.6 1a4.1 4.1.0 00-7 3.74 11.65 11.65.0 01-8.45-4.3 4.1 4.1.0 001.27 5.49C2.01 8.2 1.37 8.03.8 7.7v.05a4.1 4.1.0 003.3 4.03 4.1 4.1.0 01-1.86.07 4.1 4.1.0 003.83 2.85A8.23 8.23.0 010 16.4a11.62 11.62.0 006.29 1.84"/></svg></a><a href=https://github.com/flutterdata/flutter_data class="focus:outline-none focus-visible:shadow-outline px-1 text-gray-600 hover:text-gray-900"><svg viewBox="0 0 20 20" class="h-5 fill-current"><title>GitHub</title><path d="M10 0A10 10 0 006.84 19.49c.5.1.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94.0-1.1.39-1.99 1.03-2.69a3.6 3.6.0 01.1-2.64s.84-.27 2.75 1.02a9.58 9.58.0 015 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.4.1 2.64.64.7 1.03 1.6 1.03 2.69.0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85l-.01 2.75c0 .26.18.58.69.48A10 10 0 0010 0"/></svg></a></div></div></div></div></div></div></div><div class="w-full max-w-6xl mx-auto px-3 lg:flex"><div id=wrapper class="min-h-screen w-full lg:static lg:max-h-full lg:overflow-visible lg:pr-6 pt-20 lg:w-3/4"><div class=w-full><h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tighter break-normal pb-2 mt-2">Deconstructing Dart Constructors</h1><div class="text-lg text-gray-800"><p>Ever confused by that mysterious syntax in Dart constructors? Colons, named parameters, asserts, factories&mldr;</p><p>Read this post and you will become an expert!</p><p><img src=featured.jpg alt="Photo by Arseny Togulev on Unsplash"></p><p>When we want an <strong>instance</strong> of a certain class we call a <strong>constructor</strong>, right?</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>var</span> <span class=n>robot</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Robot</span><span class=p>();</span>
+</span></span></code></pre></div><p>In Dart 2 we can leave out the <code>new</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>var</span> <span class=n>robot</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>();</span>
+</span></span></code></pre></div><p>A constructor is used to ensure instances are created in a coherent state. This is the definition in a class:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>This constructor has no arguments so we can leave it out and write:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>The default constructor is implicitly defined.</p><div class="notice leading-relaxed bg-flutter-yellow py-4 px-6 my-8 rounded-md">Did you know you can try out Dart and Flutter code in <a href=https://dartpad.dartlang.org/>DartPad</a>?</div><h2 id=initializing>Initializing&mldr;</h2><p>Most times we need to configure our instances. For example, pass in the height of a robot:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>var</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span></code></pre></div><p><code>r</code> is now a 5-feet tall <code>Robot</code>.</p><p>To write that constructor we include the <code>height</code> field after the colon <code>:</code></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>or even</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>data</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>data</span><span class=p>.</span><span class=n>physics</span><span class=p>.</span><span class=n>raw</span><span class=p>[</span><span class=s1>&#39;heightInFt&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>This is called an <strong>initializer</strong>. It accepts a comma-separated list of expressions that initialize fields with arguments.</p><p>Fortunately, Dart gives us a shortcut. If the field name and type are the same as the argument in the constructor, we can do:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Imagine that the <code>height</code> field is expressed in feet and we want clients to supply the height in meters. Dart also allows us to initialize fields with computations from static methods (as they don&rsquo;t depend on an <em>instance</em> of the class):</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>static</span> <span class=n>mToFt</span><span class=p>(</span><span class=n>m</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>m</span> <span class=o>*</span> <span class=m>3.281</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span> <span class=c1>// in ft
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>mToFt</span><span class=p>(</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Sometimes we must call <code>super</code> constructors when initializing:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>String</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Machine</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=kd>extends</span> <span class=n>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>static</span> <span class=n>mToFt</span><span class=p>(</span><span class=n>m</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>m</span> <span class=o>*</span> <span class=m>3.281</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>mToFt</span><span class=p>(</span><span class=n>height</span><span class=p>),</span> <span class=k>super</span><span class=p>(</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Notice that <code>super(...)</code> must always be the last call in the initializer.</p><p>And if we needed to add more complex guards (than types) against a malformed robot, we can use <code>assert</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>height</span><span class=p>,</span> <span class=k>assert</span><span class=p>(</span><span class=n>height</span> <span class=o>&gt;</span> <span class=m>4.2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=accessors-and-mutators>Accessors and mutators</h2><p>Back to our earlier robot definition:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>Let&rsquo;s make it taller:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>r</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=m>6</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 6
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>But robots don&rsquo;t grow, their height is constant! Let&rsquo;s prevent anyone from modifying the height by making the field <strong>private</strong>.</p><p>In Dart, there is no <code>private</code> keyword. Instead, we use a convention: field names starting with <code>_</code> are private (library-private, actually).</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Great! But now there is no way to access <code>r.height</code>. We can make the <code>height</code> property read-only by adding a <strong>getter</strong>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Getters are functions that take no arguments and conform to the <a href=https://en.wikipedia.org/wiki/Uniform_access_principle>uniform access principle</a>.</p><p>We can simplify our getter by using two shortcuts: single expression syntax (fat arrow) and implicit <code>this</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Actually, we can think of public fields as private fields with getters and setters. That is:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>is equivalent to:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>set</span> <span class=n>height</span><span class=p>(</span><span class=n>value</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>_height</span> <span class=o>=</span> <span class=n>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Keep in mind initializers only assign values to fields and it is therefore not possible to use a setter in an initializer:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// ERROR: &#39;height&#39; isn&#39;t a field in the enclosing class
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>set</span> <span class=n>height</span><span class=p>(</span><span class=n>value</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>_height</span> <span class=o>=</span> <span class=n>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=constructor-bodies>Constructor bodies</h2><p><img src=https://media.giphy.com/media/iIAYEKtLy0yG7TacbC/giphy.gif alt></p><p>If a setter needs to be called, we&rsquo;ll have to do that in a <strong>constructor body</strong>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>h</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>height</span> <span class=o>=</span> <span class=n>h</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>set</span> <span class=n>height</span><span class=p>(</span><span class=n>value</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>_height</span> <span class=o>=</span> <span class=n>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>We can do all sorts of things in constructor bodies, but we can&rsquo;t return a value!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>;</span> <span class=c1>// ERROR: Constructors can&#39;t return values
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=final-fields>Final fields</h2><p><strong>Final</strong> fields are fields that can only be assigned once.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>7</span><span class=p>);</span> <span class=cm>/* ERROR */</span>
+</span></span></code></pre></div><p>Inside our class, we won&rsquo;t be able to use the setter:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>set</span> <span class=n>height</span><span class=p>(</span><span class=n>value</span><span class=p>)</span> <span class=o>=&gt;</span> <span class=n>_height</span> <span class=o>=</span> <span class=n>value</span><span class=p>;</span> <span class=c1>// ERROR
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><div class="notice leading-relaxed bg-flutter-yellow py-4 px-6 my-8 rounded-md"><p>Just like with <code>var</code>, we can use <code>final</code> before any type definition:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>var</span> <span class=n>r</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=n>Robot</span> <span class=n>r</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>final</span> <span class=n>r</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kd>final</span> <span class=n>Robot</span> <span class=n>r</span><span class=p>;</span>
+</span></span></code></pre></div></div><p>The following won&rsquo;t work because <code>height</code>, being <code>final</code>, <strong>must</strong> be initialized. And initialization happens before the constructor body is run:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=kt>double</span> <span class=n>height</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>height</span><span class=p>;</span> <span class=c1>// ERROR: The final variable &#39;height&#39; must be initialized
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Let&rsquo;s fix it:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=default-values>Default values</h2><p>If <em>most</em> robots are 5-feet tall then we can avoid specifying the height each time. We can make an argument <strong>optional</strong> and provide a <strong>default value</strong>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>([</span><span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=m>5</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>So we can just call:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 5
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r2d2</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>3.576</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r2d2</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 3.576
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p><img src=https://media.giphy.com/media/l1KsGK43cTDF4VAsg/giphy.gif alt></p><h2 id=immutable-robots>Immutable robots</h2><p>Our robots clearly have more attributes than a height. Let&rsquo;s add some more!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>String</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=m>170</span><span class=p>,</span> <span class=s2>&#34;Walter&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>r</span><span class=p>.</span><span class=n>name</span> <span class=o>=</span> <span class=s2>&#34;Steve&#34;</span><span class=p>;</span> <span class=c1>// ERROR
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>As all fields are <code>final</code>, our robots are immutable! Once they are initialized, their attributes can&rsquo;t be changed.</p><p>Now let&rsquo;s imagine that robots respond to many different names:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=m>170</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>names</span><span class=p>..</span><span class=n>add</span><span class=p>(</span><span class=s2>&#34;Steve&#34;</span><span class=p>));</span> <span class=c1>// [Walter, Steve]
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>Dang, using a <code>List</code> made our robot mutable again!</p><p>We can solve this with a <strong><code>const</code> constructor</strong>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>const</span> <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=kd>const</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=m>170</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>names</span><span class=p>..</span><span class=n>add</span><span class=p>(</span><span class=s2>&#34;Steve&#34;</span><span class=p>));</span> <span class=c1>// ERROR: Unsupported operation: add
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p><code>const</code> can only be used with expressions that can be computed at compile time. Take the following example:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=k>import</span> <span class=s1>&#39;dart:math&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>const</span> <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=kd>const</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=m>170</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>,</span> <span class=n>Random</span><span class=p>().</span><span class=n>nextDouble</span><span class=p>().</span><span class=n>toString</span><span class=p>()]);</span> <span class=c1>// ERROR: Invalid constant value
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p><code>const</code> instances are canonicalized which means that equal instances point to the same object in memory space when running.</p><p>For example this is a &ldquo;cheap&rdquo; operation:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=k>for</span><span class=p>(</span><span class=kd>var</span> <span class=n>i</span> <span class=o>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=m>20000</span><span class=p>;</span> <span class=n>i</span> <span class=o>+=</span> <span class=m>1</span><span class=p>)</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=m>170</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>])];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>And yes, using <code>const</code> constructors can improve performance in Flutter applications.</p><div class="my-8 bg-green-50 border-dashed border-8 border-green-600"><form name=contact class="mt-6 px-4 pb-6 w-full" method=post onsubmit="return window.submitContact(this,!1)" netlify><h3 class="initial my-0">Need professional help with Flutter?</h3><div class="initial text-sm py-4">Describe your project in detail and include your e-mail and budget.</div><textarea name=body class="initial h-32 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 mb-4 text-gray-700 leading-tight focus:outline-none text-sm" id=inline-body></textarea>
+<input type=submit class="initial shadow bg-gray-600 text-sm hover:bg-gray-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" value="Send message"><div class="form-success hidden"><p class="text-left text-gray-800 text-lg font-bold">Message sent.<br><br>Thank you! I will get back to you shortly.</p></div><div class="form-error hidden"><p class="text-left text-red-800 text-lg font-bold">An error has occurred. Please e-mail me@frank06.net with your request.</p></div></form></div><h2 id=optional-arguments-always-last>Optional arguments always last!</h2><p>If we wanted the <code>weight</code> argument to be <strong>optional</strong> we&rsquo;d have to declare it at the end:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>const</span> <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span><span class=p>,</span> <span class=p>[</span><span class=k>this</span><span class=p>.</span><span class=n>weight</span> <span class=o>=</span> <span class=m>170</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>5</span><span class=p>,</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>weight</span><span class=p>);</span> <span class=c1>// 170
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><h2 id=naming-things>Naming things</h2><p>Having to construct a robot like <code>Robot(5, ["Walter"])</code> is not very explicit.</p><p>Dart has named arguments! Naturally, they can be provided in any order and are all optional by default:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=nl>height:</span> <span class=m>5</span><span class=p>,</span> <span class=nl>names:</span> <span class=p>[</span><span class=s2>&#34;Walter&#34;</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>But we can annotate a field with <code>@required</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=err>@</span><span class=kd>required</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>(or use <code>assert(weight != null)</code> in the initializer for a runtime check!)</p><h2 id=naming-things-with-defaults>Naming things with defaults</h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=m>7</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>weight</span> <span class=o>=</span> <span class=m>100</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span> <span class=o>=</span> <span class=kd>const</span> <span class=p>[]</span> <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>weight</span><span class=p>);</span> <span class=c1>// 100
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>names</span><span class=p>);</span> <span class=c1>// []
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>It&rsquo;s important to note that these default values <strong>must be constant</strong>!</p><p>Alternatively, we can use the <a href=/articles/checking-null-aware-operators-dart>?? (&ldquo;if-null&rdquo;) operator</a> in the assignment to provide any constant or static computation:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=n>height</span><span class=p>,</span> <span class=n>weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>names</span> <span class=o>=</span> <span class=kd>const</span> <span class=p>[]</span> <span class=p>})</span> <span class=o>:</span> <span class=n>height</span> <span class=o>=</span> <span class=n>height</span> <span class=o>??</span> <span class=m>7</span><span class=p>,</span> <span class=n>weight</span> <span class=o>=</span> <span class=n>weight</span> <span class=o>??</span> <span class=kt>int</span><span class=p>.</span><span class=n>parse</span><span class=p>(</span><span class=s2>&#34;100&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>weight</span><span class=p>);</span> <span class=c1>// 100
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>How about making the attributes private?</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>_names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=k>this</span><span class=p>.</span><span class=n>_height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>_weight</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=n>_names</span> <span class=p>});</span> <span class=c1>// ERROR: Named optional parameters can&#39;t start with an underscore
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>It fails! Unlike with positional arguments, we need to specify the mappings in the initializer:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>_names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>({</span> <span class=n>height</span><span class=p>,</span> <span class=n>weight</span><span class=p>,</span> <span class=n>names</span> <span class=p>})</span> <span class=o>:</span> <span class=n>_height</span> <span class=o>=</span> <span class=n>height</span><span class=p>,</span> <span class=n>_weight</span> <span class=o>=</span> <span class=n>weight</span><span class=p>,</span> <span class=n>_names</span> <span class=o>=</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>weight</span> <span class=o>=&gt;</span> <span class=n>_weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>names</span> <span class=o>=&gt;</span> <span class=n>_names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>(</span><span class=nl>height:</span> <span class=m>5</span><span class=p>).</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 5
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><h2 id=mixing-it-up>Mixing it up</h2><p>Both positional and named argument styles can be used together:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>_weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>List</span><span class=o>&lt;</span><span class=kt>String</span><span class=o>&gt;</span> <span class=n>_names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>,</span> <span class=p>{</span> <span class=n>weight</span><span class=p>,</span> <span class=n>names</span> <span class=p>})</span> <span class=o>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>_height</span> <span class=o>=</span> <span class=n>height</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>_weight</span> <span class=o>=</span> <span class=n>weight</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=n>_names</span> <span class=o>=</span> <span class=n>names</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>height</span> <span class=o>=&gt;</span> <span class=n>_height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=kd>get</span> <span class=n>weight</span> <span class=o>=&gt;</span> <span class=n>_weight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>7</span><span class=p>,</span> <span class=nl>weight:</span> <span class=m>120</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>r</span><span class=p>.</span><span class=n>weight</span><span class=p>);</span> <span class=c1>// 120
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><h2 id=named-constructors>Named constructors</h2><p>Not only can arguments be named. We can give names to any number of constructors:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>fromPlanet</span><span class=p>(</span><span class=kt>String</span> <span class=n>planet</span><span class=p>)</span> <span class=o>:</span> <span class=n>height</span> <span class=o>=</span> <span class=p>(</span><span class=n>planet</span> <span class=o>==</span> <span class=s1>&#39;geonosis&#39;</span><span class=p>)</span> <span class=o>?</span> <span class=m>2</span> <span class=o>:</span> <span class=m>7</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>copy</span><span class=p>(</span><span class=n>Robot</span> <span class=n>other</span><span class=p>)</span> <span class=o>:</span> <span class=k>this</span><span class=p>(</span><span class=n>other</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>.</span><span class=n>copy</span><span class=p>(</span><span class=n>Robot</span><span class=p>(</span><span class=m>7</span><span class=p>)).</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=k>new</span> <span class=n>Robot</span><span class=p>.</span><span class=n>fromPlanet</span><span class=p>(</span><span class=s1>&#39;geonosis&#39;</span><span class=p>).</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 2
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=k>new</span> <span class=n>Robot</span><span class=p>.</span><span class=n>fromPlanet</span><span class=p>(</span><span class=s1>&#39;earth&#39;</span><span class=p>).</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>What happened in <code>copy</code>? We used <code>this</code> to call the default constructor, effectively &ldquo;redirecting&rdquo; the instantiation.</p><p>(<code>new</code> is optional but I sometimes like to use it, since it clearly states the intent.)</p><p>Invoking named <code>super</code> constructors works as expected:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>String</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Machine</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>Machine</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=kd>extends</span> <span class=n>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>named</span><span class=p>({</span> <span class=n>height</span><span class=p>,</span> <span class=n>name</span> <span class=p>})</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>height</span> <span class=o>=</span> <span class=n>height</span><span class=p>,</span> <span class=k>super</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=nl>height:</span> <span class=m>7</span><span class=p>,</span> <span class=nl>name:</span> <span class=s2>&#34;Walter&#34;</span><span class=p>).</span><span class=n>name</span><span class=p>);</span> <span class=c1>// Walter
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>Note that named constructors require an unnamed constructor to be defined!</p><h2 id=keeping-it-private>Keeping it private</h2><p>But what if we didn&rsquo;t want to expose a public constructor? Only <code>named</code>?</p><p>We can make a constructor private by prefixing it with an underscore:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><p>Applying this knowledge to our previous example:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kt>String</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Machine</span><span class=p>.</span><span class=n>_</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>Machine</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=kd>extends</span> <span class=n>Machine</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span> <span class=o>:</span> <span class=k>super</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>named</span><span class=p>({</span> <span class=n>height</span><span class=p>,</span> <span class=n>name</span> <span class=p>})</span> <span class=o>:</span> <span class=k>this</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=n>height</span><span class=p>,</span> <span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>.</span><span class=n>named</span><span class=p>(</span><span class=nl>height:</span> <span class=m>7</span><span class=p>,</span> <span class=nl>name:</span> <span class=s2>&#34;Walter&#34;</span><span class=p>).</span><span class=n>name</span><span class=p>);</span> <span class=c1>// Walter
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>The named constructor is &ldquo;redirecting&rdquo; to the private default constructor (which in turn delegates part of the creation to its <code>Machine</code> ancestor).</p><p>Consumers of this API only see <code>Robot.named()</code> as a way to get robot instances.</p><h2 id=a-robot-factory>A robot factory</h2><p><img src=https://media.giphy.com/media/12qq4Em3MVuwJW/giphy.gif alt></p><p>We said constructors were not allowed to return. Guess what?</p><p><strong>Factory constructors</strong> can!</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>factory</span> <span class=n>Robot</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=m>7</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>().</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>Factory constructors are syntactic sugar for the &ldquo;factory pattern&rdquo;, usually implemented with <code>static</code> functions.</p><p>They appear like a constructor from the outside (useful for example to avoid breaking API contracts), but internally they can delegate instance creation invoking a &ldquo;normal&rdquo; constructor. This explains why factory constructors <strong>do not</strong> have initializers.</p><p>Since factory constructors can return other instances (so long as they satisfy the interface of the current class), we can do very useful things like:</p><ul><li>caching: conditionally returning existing objects (they might be expensive to create)</li><li>subclasses: returning other instances such as subclasses</li></ul><p>They work with both normal and named constructors!</p><p>Here&rsquo;s our robot warehouse, that only supplies one robot per height:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>static</span> <span class=kd>final</span> <span class=n>_cache</span> <span class=o>=</span> <span class=o>&lt;</span><span class=kt>double</span><span class=p>,</span> <span class=n>Robot</span><span class=o>&gt;</span><span class=p>{};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>factory</span> <span class=n>Robot</span><span class=p>(</span><span class=n>height</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>_cache</span><span class=p>[</span><span class=n>height</span><span class=p>]</span> <span class=o>??=</span> <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r1</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>7</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r2</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>7</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=n>r3</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>(</span><span class=m>9</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>r1</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>r2</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 7
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>identical</span><span class=p>(</span><span class=n>r1</span><span class=p>,</span> <span class=n>r2</span><span class=p>));</span> <span class=c1>// true
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>r3</span><span class=p>.</span><span class=n>height</span><span class=p>);</span> <span class=c1>// 9
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>identical</span><span class=p>(</span><span class=n>r2</span><span class=p>,</span> <span class=n>r3</span><span class=p>));</span> <span class=c1>// false
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>Finally, to demonstrate how a factory would instantiate subclasses, let&rsquo;s create different robot brands that calculate prices as a function of height:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>abstract</span> <span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>factory</span> <span class=n>Robot</span><span class=p>(</span><span class=kt>String</span> <span class=n>brand</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>brand</span> <span class=o>==</span> <span class=s1>&#39;fanuc&#39;</span><span class=p>)</span> <span class=k>return</span> <span class=n>Fanuc</span><span class=p>(</span><span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>brand</span> <span class=o>==</span> <span class=s1>&#39;yaskawa&#39;</span><span class=p>)</span> <span class=k>return</span> <span class=n>Yaskawa</span><span class=p>(</span><span class=m>9</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>brand</span> <span class=o>==</span> <span class=s1>&#39;abb&#39;</span><span class=p>)</span> <span class=k>return</span> <span class=n>ABB</span><span class=p>(</span><span class=m>7</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>throw</span> <span class=s2>&#34;no brand found&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=kd>get</span> <span class=n>price</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Fanuc</span> <span class=kd>implements</span> <span class=n>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Fanuc</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=kd>get</span> <span class=n>price</span> <span class=o>=&gt;</span> <span class=n>height</span> <span class=o>*</span> <span class=m>2922.21</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Yaskawa</span> <span class=kd>implements</span> <span class=n>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>Yaskawa</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=kd>get</span> <span class=n>price</span> <span class=o>=&gt;</span> <span class=n>height</span> <span class=o>*</span> <span class=m>1315</span> <span class=o>+</span> <span class=m>8992</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>ABB</span> <span class=kd>implements</span> <span class=n>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=n>ABB</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>double</span> <span class=kd>get</span> <span class=n>price</span> <span class=o>=&gt;</span> <span class=n>height</span> <span class=o>*</span> <span class=m>2900</span> <span class=o>-</span> <span class=m>7000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>(</span><span class=s1>&#39;fanuc&#39;</span><span class=p>).</span><span class=n>price</span><span class=p>);</span> <span class=c1>// 5844.42
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>(</span><span class=s1>&#39;abb&#39;</span><span class=p>).</span><span class=n>price</span><span class=p>);</span> <span class=c1>// 13300
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=n>print</span><span class=p>(</span><span class=n>Robot</span><span class=p>(</span><span class=s1>&#39;flutter&#39;</span><span class=p>).</span><span class=n>price</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=n>err</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>err</span><span class=p>);</span> <span class=c1>// no brand found
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></div><h2 id=singletons>Singletons</h2><p>Singletons are classes that only ever create one instance. We think of this as a specific case of caching!</p><p>Let&rsquo;s implement the singleton pattern in Dart:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dart data-lang=dart><span class=line><span class=cl><span class=kd>class</span> <span class=nc>Robot</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>static</span> <span class=kd>final</span> <span class=n>Robot</span> <span class=n>_instance</span> <span class=o>=</span> <span class=k>new</span> <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=m>7</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kd>final</span> <span class=kt>double</span> <span class=n>height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>factory</span> <span class=n>Robot</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>_instance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>Robot</span><span class=p>.</span><span class=n>_</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=n>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r1</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=n>r2</span> <span class=o>=</span> <span class=n>Robot</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=n>print</span><span class=p>(</span><span class=n>identical</span><span class=p>(</span><span class=n>r1</span><span class=p>,</span> <span class=n>r2</span><span class=p>));</span> <span class=c1>// true
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=n>print</span><span class=p>(</span><span class=n>r1</span> <span class=o>==</span> <span class=n>r2</span><span class=p>);</span> <span class=c1>// true
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></div><p>The factory constructor <code>Robot(height)</code> simply always returns the one and only instance that was created when loading the <code>Robot</code> class. (So in this case, I prefer not to use <code>new</code> before <code>Robot</code>.)</p></div></div></div><div id=sidebar class="fixed inset-0 h-full bg-white z-40 w-full border-b -mb-16 lg:-mb-0 lg:static lg:h-auto lg:overflow-y-visible lg:border-b-0 lg:pt-0 lg:w-1/4 lg:block lg:border-0 pt-16 hidden"><div class="h-full overflow-y-auto scrolling-touch lg:h-auto lg:block lg:sticky lg:bg-transparent overflow-hidden lg:top-0 bg-white"><nav class="sticky inset-0 h-screen lg:pt-16 px-6 overflow-y-scroll leading-snug top-16"><h3 class="text-sm uppercase tracking-wide text-gray-700">On this page</h3><nav id=TableOfContents><ul><li><a href=#initializing>Initializing&mldr;</a></li><li><a href=#accessors-and-mutators>Accessors and mutators</a></li><li><a href=#constructor-bodies>Constructor bodies</a></li><li><a href=#final-fields>Final fields</a></li><li><a href=#default-values>Default values</a></li><li><a href=#immutable-robots>Immutable robots</a></li><li><a href=#optional-arguments-always-last>Optional arguments always last!</a></li><li><a href=#naming-things>Naming things</a></li><li><a href=#naming-things-with-defaults>Naming things with defaults</a></li><li><a href=#mixing-it-up>Mixing it up</a></li><li><a href=#named-constructors>Named constructors</a></li><li><a href=#keeping-it-private>Keeping it private</a></li><li><a href=#a-robot-factory>A robot factory</a></li><li><a href=#singletons>Singletons</a></li></ul></nav></nav></div></div></div><footer class="py-12 mt-20 text-white bg-gray-900 pattern"><div class="w-full max-w-6xl relative mx-auto pl-2 pr-4 md:pl-4 md:pr-6"><div class="flex items-center"><div class="lg:w-1/4 pl-6 pr-4 sm:pr-12 lg:pr-8"></div><div class="flex flex-grow min-w-0 lg:w-3/4"><div class="w-full lg:px-2"><p><a class=inline-block href=https://github.com/flutterdata/flutter_data/actions><img alt=tests src="https://img.shields.io/github/workflow/status/flutterdata/flutter_data/test/master?label=tests&labelColor=333940&logo=github"></a>
+<a class=inline-block href=https://codecov.io/gh/flutterdata/flutter_data rel=nofollow><img alt=codecov src=https://codecov.io/gh/flutterdata/flutter_data/branch/master/graph/badge.svg style=max-width:100%></a>
+<a class=inline-block href=https://pub.dev/packages/flutter_data rel=nofollow><img alt=pub.dev src="https://img.shields.io/pub/v/flutter_data?label=pub.dev&labelColor=333940&logo=dart" style=max-width:100%></a>
+<a class=inline-block href=https://github.com/flutterdata/flutter_data/blob/master/LICENSE><img alt=license src="https://img.shields.io/github/license/flutterdata/flutter_data?color=%23007A88&labelColor=333940&logo=mit" style=max-width:100%></a></p><p class=text-sm>Created and maintained by <a href=https://github.com/frank06/>frank06</a>.</p></div><div class="hidden lg:flex lg:items-center lg:justify-between px-6"><h1 class="mt-2 whitespace-no-wrap"><img class=inline style=object-fit:cover;width:100% src=/images/fd.png></h1></div></div></div></div></footer><script>const _open=function(){document.getElementById("sidebar").classList.remove("hidden"),document.getElementById("wrapper").classList.add("overflow-hidden","max-h-screen","fixed"),document.getElementById("sidebar-open").classList.toggle("hidden"),document.getElementById("sidebar-close").classList.toggle("hidden")},_close=function(){document.getElementById("sidebar").classList.add("hidden"),document.getElementById("wrapper").classList.remove("overflow-hidden","max-h-screen","fixed"),document.getElementById("sidebar-open").classList.toggle("hidden"),document.getElementById("sidebar-close").classList.toggle("hidden")};document.getElementById("sidebar-open").onclick=_open,document.getElementById("sidebar-close").onclick=_close,[].forEach.call(document.querySelectorAll('a[href^="#"]'),e=>{e.onclick=_close}),window.domReady=function(e){document.readyState==="interactive"||document.readyState==="complete"?e():document.addEventListener("DOMContentLoaded",e)},window.domReady(function(){for(var n,s,t=document.links,o=new RegExp("//"+location.host+"($|/)"),e=0;e<t.length;e++)n=t[e].href,s=n.substring(0,4)!=="http"||o.test(n),s||(t[e].target="_blank")}),window.submitContact=function(e){var n,s="/";return!1&&(s="(signup url)"),n=new FormData(e),n.set("url",window.location.href),fetch(s,{method:"POST",mode:"no-cors",body:n}).then(t=>{e.querySelector(".form-success").style.display="block"}).catch(()=>{e.querySelector(".form-error").style.display="block"}).finally(()=>{[].slice.call(e.querySelectorAll(".initial")).forEach(function(e){e.style.display="none"})}),!1}</script></body></html>
