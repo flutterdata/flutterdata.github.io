@@ -1,2 +1,2 @@
 baseURL = "/"
-publishdir = "docs"
+publishdir = "public"
