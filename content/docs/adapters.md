@@ -76,13 +76,13 @@ And if we have multiple models that all share the same base URL?
 We can simply make the adapter generic and apply it to any `DataModel` in our app!
 
 ```dart {hl_lines=[1 2 3 4 7]}
-mixin JSONServerAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
+mixin JsonServerAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
   @override
   String get baseUrl => 'https://myapi.com/v1/';
 }
 
 @JsonSerializable()
-@DataRepository([JSONServerAdapter])
+@DataRepository([JsonServerAdapter])
 class User extends DataModel<User> {
   final int? id;
   final String name;

@@ -49,7 +49,7 @@ class TasksApp extends HookConsumerWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: ref.watch(repositoryInitializerProvider()).when(
+          child: ref.watch(repositoryInitializerProvider).when(
             error: (error, _) => Text(error.toString()),
             loading: () => const CircularProgressIndicator(),
             data: (_) {

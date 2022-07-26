@@ -16,7 +16,7 @@ As an example, a `User` has many `Task`s:
 
 ```dart {hl_lines=[7]}
 @JsonSerializable()
-@DataRepository([JSONServerAdapter])
+@DataRepository([JsonServerAdapter])
 class User extends DataModel<User> {
   @override
   final int? id;
@@ -31,7 +31,7 @@ and a `Task` belongs to a `User`:
 
 ```dart {hl_lines=[8]}
 @JsonSerializable()
-@DataRepository([JSONServerAdapter])
+@DataRepository([JsonServerAdapter])
 class Task extends DataModel<Task> {
   @override
   final int? id;
@@ -74,7 +74,7 @@ If we don't want to supply a new relationship object like above, we may provide 
 
 ```dart {hl_lines=[10 11]}
 @JsonSerializable()
-@DataRepository([JSONServerAdapter])
+@DataRepository([JsonServerAdapter])
 class Task extends DataModel<Task> {
   @override
   final int? id;

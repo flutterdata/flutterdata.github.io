@@ -5,6 +5,8 @@ menu: tutorial
 draft: true
 ---
 
-tbd
+TBD.
+
+For now, see [How to Retry Offline Calls to Sync Data](http://localhost:1313/articles/how-to-retry-offline-sync-data/)
 
 {{< contact >}}

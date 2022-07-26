@@ -62,7 +62,7 @@ class Task extends DataModel<Task> {
 Let's start by the most typical configuration to access a remote API, the base URL.
 
 ```dart
-mixin ApplicationAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
+mixin JsonServerAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
   @override
   String get baseUrl => 'https://my-json-server.typicode.com/flutterdata/demo/';
 }
@@ -72,7 +72,7 @@ Next, we'll pass it to the annotation:
 
 ```dart {hl_lines=[2]}
 @JsonSerializable()
-@DataRepository([ApplicationAdapter])
+@DataRepository([JsonServerAdapter])
 class Task extends DataModel<Task> {
   final int? id;
   final String title;
@@ -100,7 +100,7 @@ A `Task` instance in JSON would look like:
   "id": 1,
   "title": "Finish this documentation for once",
   "completed": false,
-  "user_id": 1
+  "userId": 1
 }
 ```
 
@@ -124,11 +124,10 @@ Here is how to make it work with [Provider](/docs/faq/#configure-for-provider) a
 
 Next step is to configure local storage and initialize the framework:
 
-```dart {hl_lines=[4 5 11 "22-26"]}
+```dart {hl_lines=[2 3 4 10 "21-25"]}
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_data/flutter_data.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tutorial/main.data.dart';
 
 void main() {
@@ -146,10 +145,10 @@ class TasksApp extends HookConsumerWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: ref.watch(repositoryInitializerProvider()).when(
+          child: ref.watch(repositoryInitializerProvider).when(
                 error: (error, _) => Text(error.toString()),
                 loading: () => const CircularProgressIndicator(),
-                data: (_) => 'Hello from Flutter Data ${ref.tasks}!',
+                data: (_) => Text('Hello from Flutter Data ${ref.tasks}!'),
               ),
         ),
       ),

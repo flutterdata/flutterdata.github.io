@@ -67,8 +67,8 @@ Instead of manually reloading/restarting we will now integrate `RefreshIndicator
 class TasksScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.tasks.watchAll(params: {'_limit': 5}, syncLocal: true);
     final _newTaskController = useTextEditingController();
+    final state = ref.tasks.watchAll(params: {'_limit': 5}, syncLocal: true);
 
     if (state.isLoading) {
       return CircularProgressIndicator();
@@ -107,6 +107,27 @@ Now simply pull to refresh!
 {{< notice >}}
 A similar method can be used to [fully re-initialize Flutter Data](/articles/how-to-reinitialize-flutter-data/).
 {{< /notice >}}
+
+A DRY'er alternative would be getting hold of the notifier and calling `reload()` on it:
+
+```dart {hl_lines=[6 7 8 14]}
+class TasksScreen extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _newTaskController = useTextEditingController();
+
+    final provider =
+        ref.tasks.watchAllProvider(params: {'_limit': 5}, syncLocal: true);
+    final state = ref.watch(provider);
+
+    if (state.isLoading) {
+      return CircularProgressIndicator();
+    }
+    return RefreshIndicator(
+      onRefresh: () => ref.read(provider.notifier).reload(),
+      child: ListView(
+    // ...
+```
 
 **NEXT: [Deleting tasks](/tutorial/deleting)**
 

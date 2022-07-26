@@ -5,152 +5,237 @@ menu: tutorial
 draft: true
 ---
 
-HERE ALSO SHOW MAP/FILTER ON NOTIFIERS (on ad-hoc new providers) AND ALSO BRING SOME OF THE RIVERPOD TODO EXAMPLE FILTERS
+Let's now slightly rethink our query. Instead of **"fetching all tasks for user 1"** we are going to **"fetch user 1 with all their tasks"**.
 
-Let's now slightly rethink our query. Instead of **"fetching all TO-DOs for user 1"** we are going to **"get user 1 with all their TO-DOs"**.
+Flutter Data has first-class support for [relationships](/data-support/relationships).
 
-Flutter Data has great support for [relationships](/data-support/relationships).
+First, in `models/user.dart`, we'll create the `User` model with a `HasMany<Task>` relationship:
 
-First, in `models/user.dart`, we'll create the `User` model:
-
-```dart {hl_lines=[9 10 14]}
+```dart {hl_lines=[16]}
 import 'package:flutter_data/flutter_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'todo.dart';
+import 'task.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable()
-@DataRepository([StandardJSONAdapter, JSONPlaceholderAdapter])
+@DataRepository([JsonServerAdapter])
 class User extends DataModel<User> {
   @override
-  final int id;
+  final int? id;
   final String name;
-  final HasMany<Todo> todos;
+  final HasMany<Task> tasks;
 
-  User({this.id, this.name, this.todos});
+  User({this.id, required this.name, required this.tasks});
 }
 ```
-
-{{< notice >}}
-Notice that `HasMany<Todo>` field: it's a Flutter Data relationship!
-{{< /notice >}}
-
-But... `User` needs `JSONPlaceholderAdapter`. Since users and TO-DOs share the same base URL (exactly the one defined in `JSONPlaceholderAdapter`) we'll make this adapter **generic**.
-
-Move the existing mixin to its own file at `models/_adapters.dart` and add a type `T extends DataModel`:
-
-```dart {hl_lines=[3]}
-import 'package:flutter_data/flutter_data.dart';
-
-mixin JSONPlaceholderAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
-  @override
-  String get baseUrl => 'http://jsonplaceholder.typicode.com';
-}
-```
-
-Ready! Now import this file in both `User` and `Todo` models.
 
 Time to run code generation and get a brand-new `Repository<User>`:
 
-```
+```text
 flutter pub run build_runner build
 ```
 
-Great. We are now going to request the API, via `watchOne()`, to embed the related `Todo` models:
+Great. We are now going to issue the remote request via `watchOne()`, in order to list (_and watch for changes of_) user `1`'s `Task` models:
 
-```dart {hl_lines=[4 5 6 12 13 14 15]}
-class TodoScreen extends StatelessWidget {
+ - `params: {'_embed': 'tasks'},` tells the server to include this user's tasks (which our JSON adapter knows how to deserialize)
+ - `alsoWatch: (user) => [user.tasks]` tells the [watcher](/docs/repositories/#watchone) to rebuild the widget any time user _or_ its tasks are updated or deleted; any number of relationships of any depth can be watched
+
+```dart {hl_lines=[5 6 7 8 9 15 18 28]}
+class TasksScreen extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final repository = context.watch<Repository<User>>();
-    return DataStateBuilder<User>(
-      notifier: () => repository.watchOne('1', params: {'_embed': 'todos'}),
-      builder: (context, state, notifier, _) {
-        return RefreshIndicator(
-          onRefresh: () async {
-            await notifier.reload();
-          },
-          child: TodoList(DataState(
-            model: state.model?.todos,
-            isLoading: state.isLoading,
-          )),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _newTaskController = useTextEditingController();
+    final state = ref.users.watchOne(
+        1, // user ID, an integer
+        params: {'_embed': 'tasks'}, // HTTP param
+        alsoWatch: (user) => [user.tasks] // watcher
+      );
+
+    if (state.isLoading) {
+      return CircularProgressIndicator();
+    }
+
+    final tasks = state.model!.tasks.toList();
+
+    return RefreshIndicator(
+      onRefresh: () => ref.users.findOne(1, params: {'_embed': 'tasks'}),
+      child: ListView(
+        children: [
+          TextField(
+            controller: _newTaskController,
+            onSubmitted: (value) async {
+              Task(title: value).save();
+              _newTaskController.clear();
+            },
+          ),
+          for (final task in tasks)
+            Dismissible(
+              key: ValueKey(task),
+              direction: DismissDirection.endToStart,
+              onDismissed: (_) => task.delete(),
+              child: ListTile(
+                leading: Checkbox(
+                  value: task.completed,
+                  onChanged: (value) => task.toggleCompleted().save(),
+                ),
+                title: Text('${task.title} [id: ${task.id}]'),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
 ```
 
-(With a little `DataState` massaging we can reuse the `TodoList` widget 😄)
+Import the `user.dart` file, reload and watch it working!
 
-![](01.png)
-
-Yep, relationships between models are automagically linked!
-
-They work even when data comes in at different times: when new models are loaded, relationships are automatically wired up.
+{{< iphone "../w8a.png" >}}
 
 {{< notice >}}
-You will notice that double-clicking or swiping left **don't work properly**.
 
-The reason why?
+Note that tasks `4`, `5` and `9` for example were not loaded as they do not belong to user `1`!
 
-The notifier is listening for new _users_, not _TO-DOs_...
+This is the API response for https://my-json-server.typicode.com/flutterdata/demo/users/1?_embed=tasks that was parsed by the built-in `deserialize` method:
 
-In the next episode, we will see how to make relationships reactive.
+```json
+{
+  "id": 1,
+  "name": "frank06",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Laundry 🧺",
+      "completed": false,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "title": "Groceries 🛒",
+      "completed": true,
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "title": "Reservation at Malloys",
+      "completed": true,
+      "userId": 1
+    },
+    {
+      "id": 7,
+      "title": "Take Amanda to birthday",
+      "completed": true,
+      "userId": 1
+    },
+    {
+      "id": 8,
+      "title": "Get new surfboard 🏄‍♀️",
+      "completed": false,
+      "userId": 1
+    },
+    {
+      "id": 10,
+      "title": "Protest tyrannical mandates 👊",
+      "completed": true,
+      "userId": 1
+    }
+  ]
+}
+```
+
 {{< /notice >}}
 
-If we were to add a `BelongsTo<User>`, this is how our `Todo` would look like:
+## Creating a task
 
-```dart {hl_lines=[9 10 15]}
-import 'package:flutter_data/flutter_data.dart';
-import 'package:json_annotation/json_annotation.dart';
+As it is, adding a new task will not work. Why is that?
 
-import '_adapters.dart';
+We are creating new `Task` models without any `User` associated to them:
 
-part 'todo.g.dart';
+```dart
+onSubmitted: (value) async {
+  Task(title: value).save();
+  _newTaskController.clear();
+},
+```
 
+Let's fix this. Add a `BelongsTo<User>` relationship in `models/task.dart` and regenerate our code:
+
+```dart {hl_lines=[8 10 13]}
 @JsonSerializable()
-@DataRepository([StandardJSONAdapter, JSONPlaceholderAdapter])
-class Todo extends DataModel<Todo> {
+@DataRepository([JsonServerAdapter])
+class Task extends DataModel<Task> {
   @override
-  final int id;
+  final int? id;
   final String title;
   final bool completed;
   final BelongsTo<User> user;
 
-  Todo({this.id, this.title, this.completed = false, this.user});
+  Task({this.id, required this.title, this.completed = false, required this.user});
+  
+  Task toggleCompleted() {
+    return Task(id: this.id, title: this.title, user: user, completed: !this.completed)
+        .withKeyOf(this);
+  }
 }
 ```
 
-Great! But remember JSON Placeholder's format:
+Now we can provide the right user as a `BelongsTo`:
 
-```json
-{
-  "userId": 1,
-  "id": 1,
-  "title": "delectus aut autem",
-  "completed": false
-}
-```
-
-Since `StandardJSONAdapter` identifies relationships in the `user_id` snake-case format (Github API style), we have to override it:
-
-```dart
-import 'package:flutter_data/flutter_data.dart';
-
-mixin JSONPlaceholderAdapter<T extends DataModel<T>>
-    on StandardJSONAdapter<T> {
+```dart {hl_lines=[15 16 25]}
+class TasksScreen extends HookConsumerWidget {
   @override
-  String get baseUrl => 'http://jsonplaceholder.typicode.com';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _newTaskController = useTextEditingController();
+    final state = ref.users.watchOne(
+        1, // user ID, an integer
+        params: {'_embed': 'tasks'}, // HTTP param
+        alsoWatch: (user) => [user.tasks] // watcher
+      );
 
-  @override
-  String get identifierSuffix => 'Id';
+    if (state.isLoading) {
+      return CircularProgressIndicator();
+    }
+
+    final user = state.model!;
+    final tasks = user.tasks.toList();
+
+    return RefreshIndicator(
+      onRefresh: () => ref.users.findOne(1, params: {'_embed': 'tasks'}),
+      child: ListView(
+        children: [
+          TextField(
+            controller: _newTaskController,
+            onSubmitted: (value) async {
+              Task(title: value, user: BelongsTo(user)).save();
+              _newTaskController.clear();
+            },
+          ),
+          for (final task in tasks)
+            Dismissible(
+              key: ValueKey(task),
+              direction: DismissDirection.endToStart,
+              onDismissed: (_) => task.delete(),
+              child: ListTile(
+                leading: Checkbox(
+                  value: task.completed,
+                  onChanged: (value) => task.toggleCompleted().save(),
+                ),
+                title: Text('${task.title} [id: ${task.id}]'),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 ```
 
-And it works both ways now!
+And adding new tasks now works!
+
+{{< iphone "../w8.png" >}}
+
 
 {{< notice >}}
 **Check out the source code: https://github.com/flutterdata/tutorial**

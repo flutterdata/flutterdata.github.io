@@ -18,7 +18,7 @@ class TasksScreen extends HookConsumerWidget {
     }
     return ListView(
       children: [
-        for (final task in state.model) Text(task.title),
+        for (final task in state.model!) Text(task.title),
       ],
     );
   }
@@ -34,7 +34,7 @@ class TasksApp extends HookConsumerWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: ref.watch(repositoryInitializerProvider()).when(
+          child: ref.watch(repositoryInitializerProvider).when(
                 error: (error, _) => Text(error.toString()),
                 loading: () => const CircularProgressIndicator(),
                 data: (_) => TasksScreen(),
@@ -60,7 +60,7 @@ class TasksScreen extends HookConsumerWidget {
     }
     return ListView(
       children: [
-        for (final task in state.model)
+        for (final task in state.model!)
           ListTile(
             leading: Checkbox(
               value: task.completed,
@@ -74,13 +74,13 @@ class TasksScreen extends HookConsumerWidget {
 }
 ```
 
-If only the `toggleCompleted()` method existed... 🙂
+If only the `toggleCompleted()` method existed... 😀
 
-Since `Task` is immutable and provides no way to update fields, we return a new `Task` object with the inverse boolean value of `completed`.
+Since `Task` is immutable, we return a new `Task` object with the inverse boolean value of `completed`:
 
-```dart {hl_lines=["11-13"]}
+```dart {hl_lines=[11 12 13]}
 @JsonSerializable()
-@DataRepository([JSONServerAdapter])
+@DataRepository([JsonServerAdapter])
 class Task extends DataModel<Task> {
   @override
   final int? id;
@@ -90,21 +90,25 @@ class Task extends DataModel<Task> {
   Task({this.id, required this.title, this.completed = false});
 
   Task toggleCompleted() {
-    return Task(id: this.id, title: this.title, completed: !this.completed);
+    return Task(id: this.id, title: this.title, completed: !this.completed).withKeyOf(this);
   }
 }
 ```
 
-Hot-reload and check all boxes...
+{{< notice >}}
+**What exactly is `withKeyOf(this)` for?**
+
+When a new model is created, Flutter Data initializes it looking up its internal key based on its `id`.
+
+This way, `Task(id: 4, title: 'a')` and `Task(id: 4, title: 'b')` are essentially two versions of the same model.
+
+When there is no `id` (or potentially no `id`, as in the case above) we can use [`withKeyOf`](/docs/models/#withkeyof) to ensure the new model is treated as an updated version of the old one.
+{{< /notice >}}
+
+Regenerate code, hot-reload and check all boxes...
 
 {{< iphone "../w2.gif" >}}
 
-Done!
-
-{{< notice >}}
-Remember to check out the debug console where you can find some Flutter Data activity logs.
-{{< /notice >}}
-
-**NEXT: [Creating a new task](/tutorial/creating)**
+Done! **NEXT: [Creating a new task](/tutorial/creating)**
 
 {{< contact >}}

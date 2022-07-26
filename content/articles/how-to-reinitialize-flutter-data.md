@@ -3,7 +3,7 @@ title: "How to Reinitialize Flutter Data"
 date: 2021-12-18T17:08:28-03:00
 ---
 
-By calling `repositoryInitializerProvider()` again with Riverpod's `refresh` we can reinitialize Flutter Data.
+By calling `repositoryInitializerProvider` again with Riverpod's `refresh` we can reinitialize Flutter Data.
 
 ```dart {hl_lines=[5 6]}
 class TasksApp extends HookConsumerWidget {
@@ -11,10 +11,10 @@ class TasksApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       home: RefreshIndicator(
-        onRefresh: () async => ref.refresh(repositoryInitializerProvider()),
+        onRefresh: () async => ref.container.refresh(repositoryInitializerProvider.future),
         child: Scaffold(
           body: Center(
-            child: ref.watch(repositoryInitializerProvider()).when(
+            child: ref.watch(repositoryInitializerProvider).when(
                   error: (error, _) => Text(error.toString()),
                   loading: () => const CircularProgressIndicator(),
                   data: (_) => TasksScreen(),

@@ -17,6 +17,8 @@
   <meta name="twitter:title" content="{{ .Title }}" />
   {{ end }}
 
+  {{block "meta" .}}{{ end }}
+
   <title>{{ if .Title }}{{ if eq .Section "tutorial"}}Tutorial:{{ end }} {{ .Title }} - {{ end }}{{ .Site.Title }}
   </title>
 
