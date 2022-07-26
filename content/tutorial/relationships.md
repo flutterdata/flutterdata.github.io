@@ -2,7 +2,6 @@
 title: Using relationships
 weight: 100
 menu: tutorial
-draft: true
 ---
 
 Let's now slightly rethink our query. Instead of **"fetching all tasks for user 1"** we are going to **"fetch user 1 with all their tasks"**.

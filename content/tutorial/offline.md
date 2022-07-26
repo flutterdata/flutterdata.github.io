@@ -1,8 +1,7 @@
 ---
-title: Recovering from offline
+title: Retry offline
 weight: 110
 menu: tutorial
-draft: true
 ---
 
 TBD.
