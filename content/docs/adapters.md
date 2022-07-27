@@ -187,6 +187,45 @@ Future<R?> sendRequest<R>(
 
 With all these building blocks adapters for Wordpress or Github REST access, or even JWT authentication are easy to build.
 
+## Overriding watchers
+
+Let's imagine our app has to list completed payments in different widgets.
+
+```dart
+final state = ref.payments.watchAll(params: {'filter': {'complete': true}});
+```
+
+We could use something like the above to only request completed payments from the backend API.
+
+But non-completed payments in local storage would still show up through `watchAll`, so we would have to filter them every time in every widget.
+
+Except if we override this behavior. Since the _meat_ of the watchers happens in the notifiers (`watchAllNotifier` in this case), that is what we are going to override:
+
+```dart
+@override
+DataStateNotifier<List<Payment>?> watchAllNotifier({
+  bool? remote,
+  Map<String, dynamic>? params,
+  Map<String, String>? headers,
+  bool? syncLocal,
+  String? finder,
+  DataRequestLabel? label,
+}) {
+  return super
+      .watchAllNotifier(
+        remote: remote,
+        params: params,
+        headers: headers,
+        syncLocal: syncLocal,
+        finder: finder,
+        label: label,
+      )
+      .where((payment) => payment.isComplete);
+}
+```
+
+Both `where` and `map` are available as notifier extensions. In the future these could be turned into watcher arguments for easier access.
+
 **Many more adapter examples can be found perusing the [articles](/articles).**
 
 {{< contact >}}
