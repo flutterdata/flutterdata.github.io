@@ -6,7 +6,7 @@ menu: tutorial
 
 Let's now slightly rethink our query. Instead of **"fetching all tasks for user 1"** we are going to **"fetch user 1 with all their tasks"**.
 
-Flutter Data has first-class support for [relationships](/data-support/relationships).
+Flutter Data has first-class support for [relationships](/docs/relationships).
 
 First, in `models/user.dart`, we'll create the `User` model with a `HasMany<Task>` relationship:
 
