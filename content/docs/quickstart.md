@@ -14,15 +14,15 @@ dependencies:
   flutter_data: ^{{< latest >}}
 
   # Highly RECOMMENDED (but not required) packages
-  path_provider: ^2.0.7
-  json_annotation: ^4.4.0
-  flutter_riverpod: ^1.0.0
+  path_provider: ^2.0.11
+  json_annotation: ^4.7.0
+  hooks_riverpod: ^2.1.1
 
 dev_dependencies:
-  build_runner: ^2.0.4 # REQUIRED!
+  build_runner: ^2.2.0 # REQUIRED!
 
   # Highly RECOMMENDED (but not required) packages
-  json_serializable: ^6.1.4
+  json_serializable: ^6.4.1
 ```
 
 Flutter Data doesn't require any library besides `build_runner` for code generation.
@@ -32,6 +32,10 @@ However, `json_serializable` and `path_provider` are very convenient so they are
 {{< notice >}}
 The latest `flutter_data` should be `{{% latest %}}`. Please check for all packages latest stable versions before copy-pasting dependencies.
 {{< /notice >}}
+
+### On Riverpod
+
+This package is developed for Riverpod, specifically **[Riverpod 2.x Hooks](https://docs-v2.riverpod.dev/docs/about_hooks)**. Other libraries such as [Provider](/articles/configure-provider/) or [GetIt](/articles/configure-get-it/) might work but there are no guarantees.
 
 ### Basic configuration 🔧
 

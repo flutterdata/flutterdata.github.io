@@ -226,6 +226,19 @@ DataStateNotifier<List<Payment>?> watchAllNotifier({
 
 Both `where` and `map` are available as notifier extensions. In the future these could be turned into watcher arguments for easier access.
 
+## Custom behavior on model initialization
+
+Creating a `Task` will not persist it by default, we'd need to call `saveLocal()` for that.
+
+There is a hook for model initialization which can be used to execute custom behavior such as auto-saving.
+
+```dart
+mixin TaskAdapter on RemoteAdapter<Task> {
+  @override
+  void onModelInitialized(Task model) => model.saveLocal();
+}
+```
+
 **Many more adapter examples can be found perusing the [articles](/articles).**
 
 {{< contact >}}

@@ -39,7 +39,7 @@ flutter pub run build_runner build
 Great. We are now going to issue the remote request via `watchOne()`, in order to list (_and watch for changes of_) user `1`'s `Task` models:
 
  - `params: {'_embed': 'tasks'},` tells the server to include this user's tasks (which our JSON adapter knows how to deserialize)
- - `alsoWatch: (user) => [user.tasks]` tells the [watcher](/docs/repositories/#watchone) to rebuild the widget any time user _or_ its tasks are updated or deleted; any number of relationships of any depth can be watched
+ - `alsoWatch: (user) => [user.tasks]` tells the [watcher](/docs/repositories/#watchone) to rebuild the widget any time user _or_ its tasks are updated or deleted; any number of relationships of any depth can be watched. (For instance, `alsoWatch: (user) => [user.tasks, user.tasks.comments, user.tasks.comments.owner]`)
 
 ```dart {hl_lines=[5 6 7 8 9 15 18 28]}
 class TasksScreen extends HookConsumerWidget {

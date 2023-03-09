@@ -60,7 +60,7 @@ Future<List<T>?> findAll({
 });
 ```
 
-The `remote`, `background`, `params`, `headers`, `onSuccess`, `onError` and `label` arguments are detailed in [common arguments](#common-arguments) below.
+Further information on the `remote`, `background`, `params`, `headers`, `onSuccess`, `onError` and `label` arguments available in [common arguments](#common-arguments) below.
 
 The `syncLocal` argument instructs local storage to synchronize the exact resources returned from the remote source (for example, to reflect server-side deletions).
 
@@ -402,6 +402,10 @@ class Task extends DataModel<Task> {
 
 {{< /notice >}}
 
+### background
+
+Default `false`. Calling a finder with `background = true` will make it return immediately with the current value in local storage while triggering a remote request in the background. This is typically useful when using this primitive in certain adapter customizations.
+
 ### params
 
 Include query parameters (of type `Map<String, dynamic>`, in this case used for pagination and resource inclusion):
@@ -502,6 +506,19 @@ final nestedLabel1 = DataRequestLabel('findAll',
 ref.tasks.log(label, 'testing nested labels', logLevel: 2);
 ```
 
+## Local adapters
+
+See [Local Adapters](/docs/local-adapters).
+
+## Graph
+
+Flutter Data uses a reactive bidirectional graph data structure to keep track of relationships and key-ID mappings. Changes on this graph will trigger updates to the [watchers](#watchers), by default once per change but a throttle can be configured to prevent superfluous re-renders.
+
+```dart
+graphNotifierThrottleDurationProvider
+  .overrideWithValue(Duration(milliseconds: 100)),
+```
+
 ## Architecture overview
 
 This is the dependency graph for an app with models `User` and `Task`:
@@ -511,8 +528,6 @@ This is the dependency graph for an app with models `User` and `Task`:
 </p>
 
 Clients should only interact with repositories and adapters, while using the [Adapter API](/docs/adapters) to customize behavior.
-
-`LocalAdapter`, `GraphNotifier` and `LocalStorage` are internal concerns. **Do not use them.**
 
 {{< contact >}}
 
