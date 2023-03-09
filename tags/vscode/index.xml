@@ -2,4 +2,4 @@
 flutter upgrade This will update Flutter to the latest version in the current channel. Most likely you have it set in stable.
 flutter channel # Flutter channels: # beta # dev # master # * stable Do you want to live in the cutting edge? Switching channels is easy:
 flutter channel dev # Switching to flutter channel &amp;#39;dev&amp;#39;... # ... And run upgrade again:
-flutter upgrade Need professional help with Flutter?</description></item></channel></rss>
+flutter upgrade</description></item></channel></rss>
